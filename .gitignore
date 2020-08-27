@@ -1,0 +1,14 @@
+
+UserManagement/.vs/
+
+UserManagement/User.API/bin/
+
+UserManagement/User.API/obj/
+
+UserManagement/User.Domain/bin/
+
+UserManagement/User.Domain/obj/
+
+UserManagement/User.Infrastructure/bin/
+
+UserManagement/User.Infrastructure/obj/
