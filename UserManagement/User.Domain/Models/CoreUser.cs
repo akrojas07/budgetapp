@@ -6,6 +6,15 @@ namespace User.Domain.Models
 {
     public class CoreUser
     {
+        public CoreUser() { }
+        public CoreUser(string email, string firstName, string lastName, string password, bool status)
+        {
+            Email = email;
+            FirstName = firstName;
+            LastName = lastName;
+            Password = password;
+            Status = status;
+        }
         public long Id { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }

@@ -20,7 +20,7 @@ namespace User.Domain.Services.Interfaces
         Task UpdateUserEmail(long userId, string email);
         Task UpdateUserPassword(long userId, string password);
         Task UpdateName(long userId, string nameType, string name);
-        Task LogIn(long userId, string password);
+        Task LogIn(string userEmail, string password);
         Task LogOut(long userId);
         
 

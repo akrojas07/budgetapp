@@ -6,6 +6,7 @@ using User.Domain.Models;
 using User.Domain.Services.Interfaces;
 using User.Infrastructure.Repository.Interfaces;
 using User.Domain.DbMapper;
+using User.Infrastructure.Repository.Entities;
 
 namespace User.Domain.Services
 {
@@ -26,21 +27,29 @@ namespace User.Domain.Services
         /// <returns>Task</returns>
         public async Task CreateNewUserAccount(CoreUser coreUser)
         {
-            //pull any user that exists with email address provided
-            var existingUser = await _userRepository.GetUserByEmail(coreUser.Email);
+            UserAccount existingUser = null; 
+
+            try
+            {
+                //pull any user that exists with email address provided
+                existingUser = await _userRepository.GetUserByEmail(coreUser.Email);
+            }
+
+            catch(Exception) 
+            {
+                //map from core to db user
+                var dbUser = EfUserMapper.CoreToDbUser(coreUser);
+
+                //create new user account with repository method
+                await _userRepository.CreateNewUserAccount(dbUser);
+
+            }
             
             //validate that user is null
             if(existingUser != null)
             {
                 throw new Exception("User with associated email exists.");
             }
-
-            //map from core to db user
-            var dbUser = EfUserMapper.CoreToDbUser(coreUser);
-            
-            //create new user account with repository method
-            await _userRepository.CreateNewUserAccount(dbUser);
-
         }
 
         /// <summary>
@@ -85,17 +94,17 @@ namespace User.Domain.Services
 
         }
         /// <summary>
-        /// Method to log user in
+        /// Method to log user in with email
         /// Validates password
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="userEmail"></param>
         /// <param name="password"></param>
         /// <returns>Task</returns>
 
-        public async Task LogIn(long userId, string password)
+        public async Task LogIn(string userEmail, string password)
         {
             //pull user object
-            var user = await _userRepository.GetUserByUserId(userId);
+            var user = await _userRepository.GetUserByEmail(userEmail);
 
             //validate user exists
             if(user == null)
@@ -110,7 +119,7 @@ namespace User.Domain.Services
             }
 
             //log user in
-            await _userRepository.UpdateStatus(userId, true);
+            await _userRepository.UpdateStatus(user.Id, true);
 
         }
         /// <summary>

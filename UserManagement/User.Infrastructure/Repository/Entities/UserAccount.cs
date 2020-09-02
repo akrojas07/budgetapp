@@ -8,6 +8,12 @@ namespace User.Infrastructure.Repository.Entities
     {
         public UserAccount() { }
 
+        public UserAccount(string email, string password)
+        {
+            Email = email;
+            Password = password;
+        }
+
         public long Id { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
