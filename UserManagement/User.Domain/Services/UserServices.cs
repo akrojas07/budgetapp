@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using User.Domain.Models;
 using User.Domain.Services.Interfaces;
@@ -39,7 +37,7 @@ namespace User.Domain.Services
             {
                 //map from core to db user
                 var dbUser = EfUserMapper.CoreToDbUser(coreUser);
-
+                dbUser.Updated = DateTime.Now;
                 //create new user account with repository method
                 await _userRepository.CreateNewUserAccount(dbUser);
 

@@ -107,7 +107,7 @@ namespace User.Tests.Domain_Tests
         [Test]
         public async Task Test_LogIn_Success()
         {
-            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount("email", "password"));
+            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount() { Email = "email", Password = "password"});
             _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()));
 
             var userService = new UserServices(_userRepository.Object);
@@ -120,7 +120,7 @@ namespace User.Tests.Domain_Tests
         [Test]
         public void Test_LogIn_Fail_IncorrectPassword()
         {
-            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount("email", "pass"));
+            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount() { Email = "email", Password = "password" });
             _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()));
 
             var userService = new UserServices(_userRepository.Object);

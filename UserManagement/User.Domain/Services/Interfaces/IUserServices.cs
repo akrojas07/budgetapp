@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using User.Domain.Models;
 
 namespace User.Domain.Services.Interfaces
@@ -16,7 +13,7 @@ namespace User.Domain.Services.Interfaces
         Task<CoreUser> GetUserByEmail(string email);
 
 
-        // --------- update user --------------- \\ remember to update the "updated" date property
+        // --------- update user --------------- \\ 
         Task UpdateUserEmail(long userId, string email);
         Task UpdateUserPassword(long userId, string password);
         Task UpdateName(long userId, string nameType, string name);

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using User.Infrastructure.Repository.Interfaces;
-using User.Infrastructure.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 
 using DbUser = User.Infrastructure.Repository.Entities.UserAccount;
+using User.Infrastructure.Repository.Entities;
 
 namespace User.Infrastructure.Repository.UserRepositories
 {
