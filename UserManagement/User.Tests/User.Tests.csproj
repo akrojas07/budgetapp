@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="API Tests\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\User.API\User.API.csproj" />
     <ProjectReference Include="..\User.Domain\User.Domain.csproj" />
   </ItemGroup>

@@ -37,6 +37,7 @@ namespace User.Domain.Services
             {
                 //map from core to db user
                 var dbUser = EfUserMapper.CoreToDbUser(coreUser);
+                dbUser.Created = DateTime.Now;
                 dbUser.Updated = DateTime.Now;
                 //create new user account with repository method
                 await _userRepository.CreateNewUserAccount(dbUser);

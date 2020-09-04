@@ -18,20 +18,9 @@ namespace User.API.Controllers
             _userServices = userServices;
         }
 
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok("test");
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateNewUserAccount([FromBody]CreateNewUserAccountRequest createNewUserAccount)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest("");
-            //}
-
             try
             {
                 CoreUser coreUser = new CoreUser()
@@ -56,11 +45,6 @@ namespace User.API.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteUserAccount([FromBody] DeleteAccountRequest deleteAccount)
         {
-            //if(!ModelState.IsValid)
-            //{
-            //    return new HttpResponseMessage(HttpStatusCode.BadRequest);
-            //}
-
             try
             {
                 await _userServices.DeleteUserAccount(deleteAccount.UserId);
@@ -72,6 +56,38 @@ namespace User.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserByEmail()
+        {
+            try
+            {
+                await _userServices.GetUserByEmail();
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+        /*
+             public async Task<CoreUser> GetUserByEmail(string email)
+    {
+        //pull user object
+        var dbUser = await _userRepository.GetUserByEmail(email);
+
+        //validate user exists
+        if(dbUser == null)
+        {
+            throw new Exception("User does not exist");
+        }
+
+        //map db user to core user
+        CoreUser coreUser = EfUserMapper.DbToCoreUser(dbUser);
+
+        return coreUser;
+
+    }    
+     */
 
     }
 }
