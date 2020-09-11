@@ -108,7 +108,8 @@ namespace User.Tests.Domain_Tests
         public async Task Test_LogIn_Success()
         {
             _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount() { Email = "email", Password = "password"});
-            _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()));
+            _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
+                .Returns(Task.CompletedTask);
 
             var userService = new UserServices(_userRepository.Object);
             await userService.LogIn("email", "password");
@@ -121,7 +122,8 @@ namespace User.Tests.Domain_Tests
         public void Test_LogIn_Fail_IncorrectPassword()
         {
             _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount() { Email = "email", Password = "password" });
-            _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()));
+            _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
+                .Returns(Task.CompletedTask); 
 
             var userService = new UserServices(_userRepository.Object);
 
@@ -134,7 +136,8 @@ namespace User.Tests.Domain_Tests
         public async Task Test_LogOut_Success()
         {
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).ReturnsAsync(new UserAccount());
-            _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()));
+            _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
+                .Returns(Task.CompletedTask);
 
             var userService = new UserServices(_userRepository.Object);
             await userService.LogOut(1);
@@ -145,7 +148,8 @@ namespace User.Tests.Domain_Tests
         public void Test_LogOut_Fail()
         {
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).Throws<Exception>();
-            _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()));
+            _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
+                .Returns(Task.CompletedTask); 
 
             var userService = new UserServices(_userRepository.Object);
             Assert.ThrowsAsync<Exception>(() => userService.LogOut(1));
@@ -156,7 +160,8 @@ namespace User.Tests.Domain_Tests
         public async Task Test_UpdateName_Success()
         {
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).ReturnsAsync(new UserAccount());
-            _userRepository.Setup(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()));
+            _userRepository.Setup(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask); 
 
             var service = new UserServices(_userRepository.Object);
             await service.UpdateName(1, "first", "name");
@@ -167,7 +172,8 @@ namespace User.Tests.Domain_Tests
         public void Test_UpdateName_Fail()
         {
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).Throws<Exception>();
-            _userRepository.Setup(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()));
+            _userRepository.Setup(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask); 
 
             var service = new UserServices(_userRepository.Object);
             Assert.ThrowsAsync<Exception>(() => service.UpdateName(0, "first", "name"));
@@ -177,22 +183,44 @@ namespace User.Tests.Domain_Tests
         [Test]
         public async Task Test_UpdateUserEmail_Success()
         {
+            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
+                .ThrowsAsync(new Exception());
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).ReturnsAsync(new UserAccount());
-            _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()));
+            _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
 
             var service = new UserServices(_userRepository.Object);
-            await service.UpdateUserEmail(1, "email");
+            await service.UpdateUserEmail(1, "emailAK");
             _userRepository.Verify(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
-        public void Test_UpdateUserEmail_Fail()
+        public void Test_UpdateUserEmail_Fail_UserNotFound()
         {
-            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).Throws<Exception>();
-            _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()));
+            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
+                .ThrowsAsync(new Exception());
+            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>()))
+                .Throws<Exception>();
+            _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
 
             var service = new UserServices(_userRepository.Object);
             Assert.ThrowsAsync<Exception>(() => service.UpdateUserEmail(0, "email"));
+            _userRepository.Verify(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        public void Test_UpdateUserEmail_ExistingEmail()
+        {
+            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
+                .ReturnsAsync(new UserAccount());
+            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>()))
+                .ReturnsAsync(new UserAccount());
+            _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+
+            var services = new UserServices(_userRepository.Object);
+            Assert.ThrowsAsync<Exception>(() => services.UpdateUserEmail(1, "email"));
             _userRepository.Verify(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
         }
         

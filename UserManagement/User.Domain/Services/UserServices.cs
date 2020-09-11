@@ -171,14 +171,37 @@ namespace User.Domain.Services
         /// <returns>Task</returns>
         public async Task UpdateUserEmail(long userId, string email)
         {
-            var user = await _userRepository.GetUserByUserId(userId);
+            // new user instance
+            UserAccount userE = null;
 
-            if(user == null)
+            try
             {
-                throw new Exception("User does not exist");
+                //pull user by email address 
+                 userE = await _userRepository.GetUserByEmail(email);
+            }
+            catch(Exception)
+            {
+                try
+                {
+                    //if email address is not associated to existing user, pull user by user id
+                    var userI = await _userRepository.GetUserByUserId(userId);
+                    await _userRepository.UpdateUserEmail(userI.Id, email);
+
+                }
+                catch (Exception)
+                {
+                    throw new Exception("User User does not exist");
+                }
+
             }
 
-            await _userRepository.UpdateUserEmail(userId, email);
+            //validate that userE is null
+            // if not null, don't allow the email address update
+
+            if (userE != null)
+            {
+                throw new Exception("This email is associated to a different account, please try again");
+            }
         }
         /// <summary>
         /// Method to update user password

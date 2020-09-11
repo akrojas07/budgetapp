@@ -9,7 +9,7 @@ namespace User.API.Models
     public class CreateNewUserAccountRequest
     {
         [Required(AllowEmptyStrings =false, ErrorMessage ="Email Required")]
-        [EmailAddress(ErrorMessage ="Invalid password")]
+        [EmailAddress(ErrorMessage ="Invalid email")]
         public string Email { get; set; }
         
         [Required(AllowEmptyStrings = false, ErrorMessage ="First Name Required")]

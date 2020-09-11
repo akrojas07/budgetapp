@@ -78,5 +78,166 @@ namespace User.Tests.API_Tests
             Assert.AreEqual(response.GetType(), typeof(ObjectResult));
             Assert.AreEqual(((ObjectResult)response).StatusCode, 500);
         }
+
+        [Test]
+        public async Task Test_LogIn_Success()
+        {
+            _userServices.Setup(u => u.LogIn(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.LogIn(new LogInAccountRequest());
+
+            Assert.NotNull(response);
+            Assert.AreEqual(response.GetType(), typeof(OkResult));
+            Assert.AreEqual(((StatusCodeResult)response).StatusCode, 200);
+        }
+
+        [Test]
+        public async Task Test_LogIn_Fail()
+        {
+            _userServices.Setup(u => u.LogIn(It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception());
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.LogIn(new LogInAccountRequest());
+
+            Assert.NotNull(response);
+            Assert.AreEqual(response.GetType(), typeof(ObjectResult));
+            Assert.AreEqual(((ObjectResult)response).StatusCode, 500);
+            
+        }
+
+        [Test]
+        public async Task Test_LogOut_Success()
+        {
+         
+            _userServices.Setup(u => u.LogOut(It.IsAny<long>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.LogOut(new LogOutAccountRequest());
+
+            Assert.NotNull(response);
+            Assert.AreEqual(((StatusCodeResult)response).StatusCode, 200);
+
+        }
+
+        [Test]
+        public async Task Test_LogOut_Fail()
+        {
+            _userServices.Setup(u => u.LogOut(It.IsAny<long>()))
+                .ThrowsAsync(new Exception());
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.LogOut(new LogOutAccountRequest());
+
+            Assert.NotNull(response);
+            Assert.AreEqual(((ObjectResult)response).StatusCode, 500);
+        }
+
+        [Test]
+        public async Task Test_UpdateName_Success()
+        {
+            _userServices.Setup(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.UpdateUserName(new UpdateNameAccountRequest());
+
+            Assert.NotNull(response);
+            Assert.AreEqual(200, ((StatusCodeResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_UpdateName_Fail()
+        { 
+            _userServices.Setup(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception());
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.UpdateUserName(new UpdateNameAccountRequest());
+
+            Assert.NotNull(response);
+            Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_GetUserByEmail_Success()
+        {
+            _userServices.Setup(u => u.GetUserByEmail(It.IsAny<string>()));
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.GetUserByEmail("email");
+
+            Assert.NotNull(response);
+            Assert.AreEqual(200, ((ObjectResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_GetUserByEmail_Fail()
+        {
+            _userServices.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
+                .ThrowsAsync(new Exception());
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.GetUserByEmail("email");
+
+            Assert.NotNull(response);
+            Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_UpdateUserEmail_Success()
+        {
+            _userServices.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.UpdateUserEmail(new UpdateUserEmailRequest());
+
+            Assert.NotNull(response);
+            Assert.AreEqual(200, ((StatusCodeResult)response).StatusCode);
+
+        }
+
+        [Test]
+        public async Task Test_UpdateUserEmail_Fail()
+        {
+            _userServices.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception());
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.UpdateUserEmail(new UpdateUserEmailRequest());
+
+            Assert.NotNull(response);
+            Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_UpdateUserPassword_Success()
+        {
+            _userServices.Setup(u => u.UpdateUserPassword(It.IsAny<long>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.UpdateUserPassword(new UpdateUserPasswordRequest());
+
+            Assert.NotNull(response);
+            Assert.AreEqual(200, ((StatusCodeResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_UpdateUserPassword_Fail()
+        {
+            _userServices.Setup(u => u.UpdateUserPassword(It.IsAny<long>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception());
+
+            var controller = new UserController(_userServices.Object);
+            var response = await controller.UpdateUserPassword(new UpdateUserPasswordRequest());
+
+            Assert.NotNull(response);
+            Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
+        }
     }
 }
