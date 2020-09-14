@@ -17,10 +17,15 @@ namespace User.Tests.Domain_Tests
     {
         private Mock<IUserRepository> _userRepository;
 
+        private byte[] _hashPassword;
+        
         [SetUp]
         public void Setup()
         {
             _userRepository = new Mock<IUserRepository>();
+
+            var passwordService = new PasswordService();
+            _hashPassword = passwordService.CreatePasswordHash("password");
         }
 
         [Test]
@@ -30,24 +35,21 @@ namespace User.Tests.Domain_Tests
 
             _userRepository.Setup(u => u.CreateNewUserAccount(It.IsAny<UserAccount>()));
 
-            var userService = new UserServices(_userRepository.Object);
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
 
             await userService.CreateNewUserAccount(new CoreUser("Email@Email.com", "FirstName", "LastName", "Password", true));
 
             _userRepository.Verify(u => u.CreateNewUserAccount(It.IsAny<UserAccount>()), Times.Once);
-
-
         }
 
         [Test]
-
         public void Test_CreateNewUserAccount_Fail_ExistingUser()
         {
             _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount());
 
             _userRepository.Setup(u => u.CreateNewUserAccount(It.IsAny<UserAccount>()));
 
-            var userService = new UserServices(_userRepository.Object);
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
 
             Assert.ThrowsAsync<Exception>(() => userService.CreateNewUserAccount(new CoreUser("Email@Email.com", "FirstName", "LastName", "Password", true)));
 
@@ -60,7 +62,7 @@ namespace User.Tests.Domain_Tests
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).ReturnsAsync(new UserAccount());
             _userRepository.Setup(u => u.DeleteUserAccount(It.IsAny<long>()));
 
-            var userService = new UserServices(_userRepository.Object);
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
 
             await userService.DeleteUserAccount(1);
 
@@ -73,7 +75,7 @@ namespace User.Tests.Domain_Tests
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).Throws<Exception>();
             _userRepository.Setup(u => u.DeleteUserAccount(It.IsAny<long>()));
 
-            var userService = new UserServices(_userRepository.Object);
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
 
             Assert.ThrowsAsync<Exception>(() => userService.DeleteUserAccount(1));
 
@@ -85,7 +87,7 @@ namespace User.Tests.Domain_Tests
         {
             _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount());
 
-            var userService = new UserServices(_userRepository.Object);
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
 
             await userService.GetUserByEmail("email");
 
@@ -97,40 +99,43 @@ namespace User.Tests.Domain_Tests
         public void Test_GetUserByEmail_Fail_EmailNotFound()
         {
             _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).Throws<Exception>();
-            var userService = new UserServices(_userRepository.Object);
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
             Assert.ThrowsAsync<Exception>(() => userService.GetUserByEmail("email"));
 
             _userRepository.Verify(u => u.GetUserByEmail(It.IsAny<string>()), Times.Once);
 
         }
 
+
         [Test]
         public async Task Test_LogIn_Success()
         {
-            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount() { Email = "email", Password = "password"});
+            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount() { Email = "email", Password = _hashPassword });
             _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
                 .Returns(Task.CompletedTask);
 
-            var userService = new UserServices(_userRepository.Object);
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
+
             await userService.LogIn("email", "password");
             _userRepository.Verify(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()), Times.Once);
 
 
         }
 
+        
         [Test]
         public void Test_LogIn_Fail_IncorrectPassword()
         {
-            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount() { Email = "email", Password = "password" });
+            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount() { Email = "email", Password = _hashPassword });
             _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
                 .Returns(Task.CompletedTask); 
 
-            var userService = new UserServices(_userRepository.Object);
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
 
-            Assert.ThrowsAsync<Exception>(() => userService.LogIn("email", "password"));
+            Assert.ThrowsAsync<Exception>(() => userService.LogIn("email", "password2"));
             _userRepository.Verify(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()), Times.Never);
 
-        }
+        } 
 
         [Test]
         public async Task Test_LogOut_Success()
@@ -139,7 +144,7 @@ namespace User.Tests.Domain_Tests
             _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
                 .Returns(Task.CompletedTask);
 
-            var userService = new UserServices(_userRepository.Object);
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
             await userService.LogOut(1);
             _userRepository.Verify(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()), Times.Once);
         }
@@ -149,9 +154,9 @@ namespace User.Tests.Domain_Tests
         {
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).Throws<Exception>();
             _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
-                .Returns(Task.CompletedTask); 
+                .Returns(Task.CompletedTask);
 
-            var userService = new UserServices(_userRepository.Object);
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
             Assert.ThrowsAsync<Exception>(() => userService.LogOut(1));
             _userRepository.Verify(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()), Times.Never);
         }
@@ -161,9 +166,9 @@ namespace User.Tests.Domain_Tests
         {
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).ReturnsAsync(new UserAccount());
             _userRepository.Setup(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.CompletedTask); 
+                .Returns(Task.CompletedTask);
 
-            var service = new UserServices(_userRepository.Object);
+            var service = new UserServices(_userRepository.Object, new PasswordService());
             await service.UpdateName(1, "first", "name");
             _userRepository.Verify(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
@@ -173,9 +178,9 @@ namespace User.Tests.Domain_Tests
         {
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).Throws<Exception>();
             _userRepository.Setup(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.CompletedTask); 
+                .Returns(Task.CompletedTask);
 
-            var service = new UserServices(_userRepository.Object);
+            var service = new UserServices(_userRepository.Object, new PasswordService());
             Assert.ThrowsAsync<Exception>(() => service.UpdateName(0, "first", "name"));
             _userRepository.Verify(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
@@ -189,7 +194,7 @@ namespace User.Tests.Domain_Tests
             _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
-            var service = new UserServices(_userRepository.Object);
+            var service = new UserServices(_userRepository.Object, new PasswordService());
             await service.UpdateUserEmail(1, "emailAK");
             _userRepository.Verify(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
         }
@@ -204,7 +209,7 @@ namespace User.Tests.Domain_Tests
             _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
-            var service = new UserServices(_userRepository.Object);
+            var service = new UserServices(_userRepository.Object, new PasswordService());
             Assert.ThrowsAsync<Exception>(() => service.UpdateUserEmail(0, "email"));
             _userRepository.Verify(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
         }
@@ -219,32 +224,31 @@ namespace User.Tests.Domain_Tests
             _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
-            var services = new UserServices(_userRepository.Object);
-            Assert.ThrowsAsync<Exception>(() => services.UpdateUserEmail(1, "email"));
+            var userService = new UserServices(_userRepository.Object, new PasswordService());
+            Assert.ThrowsAsync<Exception>(() => userService.UpdateUserEmail(1, "email"));
             _userRepository.Verify(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
         }
-        
+
         [Test]
         public async Task Test_UpdateUserPassword_Success()
         {
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).ReturnsAsync(new UserAccount());
-            _userRepository.Setup(u => u.UpdateUserPassword(It.IsAny<long>(), It.IsAny<string>()));
+            _userRepository.Setup(u => u.UpdateUserPassword(It.IsAny<long>(), It.IsAny<byte[]>()));
 
-            var service = new UserServices(_userRepository.Object);
+            var service = new UserServices(_userRepository.Object, new PasswordService());
             await service.UpdateUserPassword(1, "password");
-            _userRepository.Verify(u => u.UpdateUserPassword(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
+            _userRepository.Verify(u => u.UpdateUserPassword(It.IsAny<long>(), It.IsAny<byte[]>()), Times.Once);
         }
 
         [Test]
         public void Test_UpdateUserPassword_Fail()
         {
             _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).Throws<Exception>();
-            _userRepository.Setup(u => u.UpdateUserPassword(It.IsAny<long>(), It.IsAny<string>()));
+            _userRepository.Setup(u => u.UpdateUserPassword(It.IsAny<long>(), It.IsAny<byte[]>()));
 
-            var service = new UserServices(_userRepository.Object);
+            var service = new UserServices(_userRepository.Object, new PasswordService());
             Assert.ThrowsAsync<Exception>(() => service.UpdateUserPassword(0, "password"));
-            _userRepository.Verify(u => u.UpdateUserPassword(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
+            _userRepository.Verify(u => u.UpdateUserPassword(It.IsAny<long>(), It.IsAny<byte[]>()), Times.Never);
         }
-        
     }
 }

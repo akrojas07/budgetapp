@@ -49,14 +49,7 @@ namespace User.Infrastructure.Repository.Entities
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasDefaultValueSql("('0')");
+                entity.Property(e => e.Password).IsRequired();
 
                 entity.Property(e => e.Updated).HasColumnType("datetime");
             });

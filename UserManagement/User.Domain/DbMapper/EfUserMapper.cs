@@ -13,7 +13,6 @@ namespace User.Domain.DbMapper
                 Email = dbUser.Email,
                 FirstName = dbUser.FirstName,
                 LastName = dbUser.LastName,
-                Password = dbUser.Password,
                 Status = dbUser.Status
             };
 
@@ -29,7 +28,6 @@ namespace User.Domain.DbMapper
                 Email = domainUser.Email,
                 FirstName = domainUser.FirstName,
                 LastName = domainUser.LastName,
-                Password = domainUser.Password,
                 Status = domainUser.Status
             };
 

@@ -9,7 +9,7 @@ using DbUser = User.Infrastructure.Repository.Entities.UserAccount;
 using User.Infrastructure.Repository.Entities;
 
 namespace User.Infrastructure.Repository.UserRepositories
-{
+{ //Package Manager Console => Scaffold-DbContext "Server=DESKTOP-LQ9NL1I;Database=BudgetApp;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Repository/Entities -f
     public class UserRepository : IUserRepository
     {
         public async Task CreateNewUserAccount(DbUser user)
@@ -155,7 +155,7 @@ namespace User.Infrastructure.Repository.UserRepositories
             }
         }
 
-        public async Task UpdateUserPassword(long userId, string password)
+        public async Task UpdateUserPassword(long userId, byte[] password)
         {
             using (var context = new BudgetAppContext())
             {

@@ -9,8 +9,8 @@ namespace User.Infrastructure.Repository.Entities
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Password { get; set; }
-        public bool? Status { get; set; }
+        public byte[] Password { get; set; }
+        public bool Status { get; set; }
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
     }

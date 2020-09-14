@@ -11,18 +11,20 @@ namespace User.Domain.Services
     public class UserServices : IUserServices
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordService _passwordService;        
 
-        public UserServices(IUserRepository userRepository)
+        public UserServices(IUserRepository userRepository, IPasswordService passwordService)
         {
             _userRepository = userRepository;
+            _passwordService = passwordService;
         }
-
+     
         /// <summary>
         /// Method to create new user account
         /// Validates user does not exist based on email address 
         /// </summary>
         /// <param name="coreUser"></param>
-        /// <returns>Task</returns>
+        /// <returns>Completed Task if new user account is created</returns>
         public async Task CreateNewUserAccount(CoreUser coreUser)
         {
             UserAccount existingUser = null; 
@@ -39,6 +41,11 @@ namespace User.Domain.Services
                 var dbUser = EfUserMapper.CoreToDbUser(coreUser);
                 dbUser.Created = DateTime.Now;
                 dbUser.Updated = DateTime.Now;
+
+                //encrypt password                
+                var hashCode = _passwordService.CreatePasswordHash(coreUser.Password);
+                dbUser.Password = hashCode;
+
                 //create new user account with repository method
                 await _userRepository.CreateNewUserAccount(dbUser);
 
@@ -55,7 +62,7 @@ namespace User.Domain.Services
         /// Method to delete user account by User Id
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns>Task</returns>
+        /// <returns>Completed Task if account deletion is successful</returns>
         public async Task DeleteUserAccount(long userId)
         {
             //pull user object
@@ -74,7 +81,7 @@ namespace User.Domain.Services
         /// Method to pull user object by email
         /// </summary>
         /// <param name="email"></param>
-        /// <returns>Task</returns>
+        /// <returns>Core User</returns>
         public async Task<CoreUser> GetUserByEmail(string email)
         {
             //pull user object
@@ -92,14 +99,14 @@ namespace User.Domain.Services
             return coreUser;
 
         }
+                     
         /// <summary>
         /// Method to log user in with email
         /// Validates password
         /// </summary>
         /// <param name="userEmail"></param>
         /// <param name="password"></param>
-        /// <returns>Task</returns>
-
+        /// <returns>Completed Task if log in successful</returns>
         public async Task LogIn(string userEmail, string password)
         {
             //pull user object
@@ -112,7 +119,7 @@ namespace User.Domain.Services
             }
 
             //validate password is correct
-            while(user.Password != password)
+            while(!_passwordService.VerifyPasswordHash(password, user.Password))
             {
                 throw new Exception("Invalid password");
             }
@@ -125,7 +132,7 @@ namespace User.Domain.Services
         /// Method to log user out
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <returns>Completed Task if Logout successful</returns>
         public async Task LogOut(long userId)
         {
             //pull user object
@@ -147,7 +154,7 @@ namespace User.Domain.Services
         /// <param name="userId"></param>
         /// <param name="nameType">Refers to either first name or last name</param>
         /// <param name="name"></param>
-        /// <returns>Task</returns>
+        /// <returns>Completed Task if name is updated</returns>
         public async Task UpdateName(long userId, string nameType, string name)
         {
             //pull user object
@@ -168,7 +175,7 @@ namespace User.Domain.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="email"></param>
-        /// <returns>Task</returns>
+        /// <returns>Completed Task if email update is successful</returns>
         public async Task UpdateUserEmail(long userId, string email)
         {
             // new user instance
@@ -219,7 +226,12 @@ namespace User.Domain.Services
                 throw new Exception("User does not exist");
             }
 
-            await _userRepository.UpdateUserPassword(userId, password);
+            //encrypt new password            
+            var hash = _passwordService.CreatePasswordHash(password);
+
+            user.Password = hash;
+
+            await _userRepository.UpdateUserPassword(userId, user.Password);
         }
     }
 }

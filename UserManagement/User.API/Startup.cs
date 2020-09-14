@@ -30,14 +30,12 @@ namespace User.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //var connection = Configuration.GetConnectionString("BudgetAppDatabase");
-            //services.AddDbContext<BudgetAppContext>(options => options.UseSqlServer(connection));
-
             services.AddControllers();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddCors();
 
             services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddTransient<IPasswordService, PasswordService>();
             services.AddTransient<IUserServices, UserServices>();
         }
 
