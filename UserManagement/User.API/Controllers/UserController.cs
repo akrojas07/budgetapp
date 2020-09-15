@@ -4,21 +4,30 @@ using Microsoft.AspNetCore.Mvc;
 using User.API.Models;
 using User.Domain.Services.Interfaces;
 using User.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace User.API.Controllers
 {
     [Route("api/user")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserServices _userServices;
+        private readonly IConfiguration _config;
 
-        public UserController(IUserServices userServices)
+        public UserController(IUserServices userServices, IConfiguration config)
         {
             _userServices = userServices;
+            _config = config;
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateNewUserAccount([FromBody]CreateNewUserAccountRequest createNewUserAccount)
         {
             try
@@ -72,6 +81,7 @@ namespace User.API.Controllers
         }
 
         [HttpPatch]
+        [AllowAnonymous]
         [Route("login")]
 
         public async Task<IActionResult> LogIn([FromBody]LogInAccountRequest login)
@@ -79,12 +89,33 @@ namespace User.API.Controllers
             try
             {
                 await _userServices.LogIn(login.Email, login.Password);
-                return Ok();
+                var tokenstring = GenerateJsonWebToken();
+
+                return Ok(new { token = tokenstring});
+            }
+            catch(ArgumentException)
+            {
+                return Unauthorized();
             }
             catch(Exception e)
             {
                 return StatusCode(500, e.Message);
             }
+        }
+
+        private string GenerateJsonWebToken()
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(_config.GetSection("Jwt:Issuer").Value,
+                    _config.GetSection("Jwt:Issuer").Value,
+                    null,
+                    expires: DateTime.Now.AddMinutes(120),
+                    signingCredentials: credentials
+                ) ;
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         [HttpPatch]

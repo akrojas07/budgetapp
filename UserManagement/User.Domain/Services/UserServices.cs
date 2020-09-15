@@ -115,18 +115,17 @@ namespace User.Domain.Services
             //validate user exists
             if(user == null)
             {
-                throw new Exception("User does not exist");
+                throw new ArgumentException("User does not exist");
             }
 
             //validate password is correct
             while(!_passwordService.VerifyPasswordHash(password, user.Password))
             {
-                throw new Exception("Invalid password");
+                throw new ArgumentException("Invalid password");
             }
 
             //log user in
             await _userRepository.UpdateStatus(user.Id, true);
-
         }
         /// <summary>
         /// Method to log user out

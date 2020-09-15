@@ -132,7 +132,7 @@ namespace User.Tests.Domain_Tests
 
             var userService = new UserServices(_userRepository.Object, new PasswordService());
 
-            Assert.ThrowsAsync<Exception>(() => userService.LogIn("email", "password2"));
+            Assert.ThrowsAsync<ArgumentException>(() => userService.LogIn("email", "password2"));
             _userRepository.Verify(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()), Times.Never);
 
         } 
