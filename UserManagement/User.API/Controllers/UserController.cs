@@ -28,6 +28,7 @@ namespace User.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [Route("signUp")]
         public async Task<IActionResult> CreateNewUserAccount([FromBody]CreateNewUserAccountRequest createNewUserAccount)
         {
             try
