@@ -105,9 +105,9 @@ namespace User.Infrastructure.Repository.UserRepositories
                 {
                     return;
                 }
-
+                
                 dbUser.Status = status;
-
+                dbUser.Updated = DateTime.Now;
                 await context.SaveChangesAsync();
             }
         }
@@ -122,8 +122,9 @@ namespace User.Infrastructure.Repository.UserRepositories
                 {
                     throw new Exception("User not found");
                 }
-
+                
                 dbUser.Email = email;
+                dbUser.Updated = DateTime.Now;
                 await context.SaveChangesAsync();
 
             }
@@ -149,7 +150,7 @@ namespace User.Infrastructure.Repository.UserRepositories
                         dbUser.LastName = name;
                         break;
                 }
-
+                dbUser.Updated = DateTime.Now;
                 await context.SaveChangesAsync();
 
             }
@@ -167,7 +168,7 @@ namespace User.Infrastructure.Repository.UserRepositories
                 }
 
                 dbUser.Password = password;
-
+                dbUser.Updated = DateTime.Now;
                 await context.SaveChangesAsync();
 
 
