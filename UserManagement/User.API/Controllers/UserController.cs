@@ -42,9 +42,10 @@ namespace User.API.Controllers
                     Status = true
                 };
 
-                var userId = await _userServices.CreateNewUserAccount(coreUser);
+                var id = await _userServices.CreateNewUserAccount(coreUser);
+                var tokenstring = GenerateJsonWebToken();
 
-                return StatusCode(201, new { userId = userId });
+                return StatusCode(201, new { userId = id, token = tokenstring});
             }
             catch (Exception e)
             {
