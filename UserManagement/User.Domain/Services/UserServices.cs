@@ -25,16 +25,13 @@ namespace User.Domain.Services
         /// </summary>
         /// <param name="coreUser"></param>
         /// <returns>Completed Task if new user account is created</returns>
-        public async Task CreateNewUserAccount(CoreUser coreUser)
+        public async Task<long> CreateNewUserAccount(CoreUser coreUser)
         {
-            UserAccount existingUser = null; 
-
             try
             {
                 //pull any user that exists with email address provided
-                existingUser = await _userRepository.GetUserByEmail(coreUser.Email);
+                var existingUser = await _userRepository.GetUserByEmail(coreUser.Email);
             }
-
             catch(Exception) 
             {
                 //map from core to db user
@@ -47,15 +44,13 @@ namespace User.Domain.Services
                 dbUser.Password = hashCode;
 
                 //create new user account with repository method
-                await _userRepository.CreateNewUserAccount(dbUser);
+                var userId = await _userRepository.CreateNewUserAccount(dbUser);
 
+                return userId;
             }
             
             //validate that user is null
-            if(existingUser != null)
-            {
-                throw new Exception("User with associated email exists.");
-            }
+            throw new Exception("User with associated email exists.");
         }
 
         /// <summary>
@@ -106,8 +101,8 @@ namespace User.Domain.Services
         /// </summary>
         /// <param name="userEmail"></param>
         /// <param name="password"></param>
-        /// <returns>Completed Task if log in successful</returns>
-        public async Task LogIn(string userEmail, string password)
+        /// <returns>User Id if successful</returns>
+        public async Task<long> LogIn(string userEmail, string password)
         {
             //pull user object
             var user = await _userRepository.GetUserByEmail(userEmail);
@@ -126,6 +121,8 @@ namespace User.Domain.Services
 
             //log user in
             await _userRepository.UpdateStatus(user.Id, true);
+
+            return user.Id;
         }
         /// <summary>
         /// Method to log user out

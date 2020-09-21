@@ -31,9 +31,11 @@ namespace User.Tests.Domain_Tests
         [Test]
         public async Task Test_CreateNewUserAccount_Success()
         {
-            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).Throws<Exception>();
+            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
+                .Throws<Exception>();
 
-            _userRepository.Setup(u => u.CreateNewUserAccount(It.IsAny<UserAccount>()));
+            _userRepository.Setup(u => u.CreateNewUserAccount(It.IsAny<UserAccount>()))
+                .ReturnsAsync(1);
 
             var userService = new UserServices(_userRepository.Object, new PasswordService());
 
@@ -110,25 +112,26 @@ namespace User.Tests.Domain_Tests
         [Test]
         public async Task Test_LogIn_Success()
         {
-            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount() { Email = "email", Password = _hashPassword });
+            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
+                .ReturnsAsync(new UserAccount() { Email = "email", Password = _hashPassword });
             _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(1);
 
             var userService = new UserServices(_userRepository.Object, new PasswordService());
 
             await userService.LogIn("email", "password");
+
             _userRepository.Verify(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()), Times.Once);
-
-
         }
 
         
         [Test]
         public void Test_LogIn_Fail_IncorrectPassword()
         {
-            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(new UserAccount() { Email = "email", Password = _hashPassword });
+            _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
+                .ReturnsAsync(new UserAccount() { Email = "email", Password = _hashPassword });
             _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
-                .Returns(Task.CompletedTask); 
+                .ReturnsAsync(1);
 
             var userService = new UserServices(_userRepository.Object, new PasswordService());
 
@@ -140,9 +143,10 @@ namespace User.Tests.Domain_Tests
         [Test]
         public async Task Test_LogOut_Success()
         {
-            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).ReturnsAsync(new UserAccount());
+            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>()))
+                .ReturnsAsync(new UserAccount());
             _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(1);
 
             var userService = new UserServices(_userRepository.Object, new PasswordService());
             await userService.LogOut(1);
@@ -152,9 +156,10 @@ namespace User.Tests.Domain_Tests
         [Test]
         public void Test_LogOut_Fail()
         {
-            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).Throws<Exception>();
+            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>()))
+                .Throws<Exception>();
             _userRepository.Setup(u => u.UpdateStatus(It.IsAny<long>(), It.IsAny<bool>()))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(1);
 
             var userService = new UserServices(_userRepository.Object, new PasswordService());
             Assert.ThrowsAsync<Exception>(() => userService.LogOut(1));
@@ -164,7 +169,8 @@ namespace User.Tests.Domain_Tests
         [Test]
         public async Task Test_UpdateName_Success()
         {
-            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).ReturnsAsync(new UserAccount());
+            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>()))
+                .ReturnsAsync(new UserAccount());
             _userRepository.Setup(u => u.UpdateName(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
@@ -190,7 +196,8 @@ namespace User.Tests.Domain_Tests
         {
             _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
                 .ThrowsAsync(new Exception());
-            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>())).ReturnsAsync(new UserAccount());
+            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>()))
+                .ReturnsAsync(new UserAccount());
             _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 

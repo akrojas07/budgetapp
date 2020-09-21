@@ -6,7 +6,7 @@ namespace User.Domain.Services.Interfaces
     public interface IUserServices
     {
         // ------ Create New User Account ----- \\
-        Task CreateNewUserAccount(CoreUser coreUser);
+        Task<long> CreateNewUserAccount(CoreUser coreUser);
 
 
         // --------- pull user object ----------\\ 
@@ -17,7 +17,7 @@ namespace User.Domain.Services.Interfaces
         Task UpdateUserEmail(long userId, string email);
         Task UpdateUserPassword(long userId, string password);
         Task UpdateName(long userId, string nameType, string name);
-        Task LogIn(string userEmail, string password);
+        Task<long> LogIn(string userEmail, string password);
         Task LogOut(long userId);
         
 

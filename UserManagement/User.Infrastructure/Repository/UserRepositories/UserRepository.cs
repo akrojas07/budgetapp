@@ -12,7 +12,7 @@ namespace User.Infrastructure.Repository.UserRepositories
 { //Package Manager Console => Scaffold-DbContext "Server=DESKTOP-LQ9NL1I;Database=BudgetApp;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Repository/Entities -f
     public class UserRepository : IUserRepository
     {
-        public async Task CreateNewUserAccount(DbUser user)
+        public async Task<long> CreateNewUserAccount(DbUser user)
         {
             using(var context = new BudgetAppContext())
             {
@@ -24,6 +24,8 @@ namespace User.Infrastructure.Repository.UserRepositories
                 context.UserAccount.Add(user);
 
                 await context.SaveChangesAsync();
+
+                return user.Id;
             }
         }
 
@@ -95,7 +97,7 @@ namespace User.Infrastructure.Repository.UserRepositories
 
         }
 
-        public async Task UpdateStatus(long userId, bool status)
+        public async Task<long> UpdateStatus(long userId, bool status)
         {
             using (var context = new BudgetAppContext())
             {
@@ -103,12 +105,14 @@ namespace User.Infrastructure.Repository.UserRepositories
 
                 if(dbUser == null)
                 {
-                    return;
+                    throw new Exception("User not found");
                 }
                 
                 dbUser.Status = status;
                 dbUser.Updated = DateTime.Now;
                 await context.SaveChangesAsync();
+
+                return dbUser.Id;
             }
         }
 

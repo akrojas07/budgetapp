@@ -34,15 +34,14 @@ namespace User.Tests.API_Tests
         public async Task Test_CreateNewUserAccount_Success()
         {
             _userServices.Setup(u => u.CreateNewUserAccount(It.IsAny<CoreUser>()))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(1);
 
             var controller = new UserController(_userServices.Object, _config.Object);
 
             var response = await controller.CreateNewUserAccount(new CreateNewUserAccountRequest());
 
             Assert.NotNull(response);
-            Assert.AreEqual(response.GetType(), typeof(StatusCodeResult));
-            Assert.AreEqual(((StatusCodeResult)response).StatusCode, 201);
+            Assert.AreEqual(((ObjectResult)response).StatusCode, 201);
         }
 
         [Test]
@@ -92,7 +91,7 @@ namespace User.Tests.API_Tests
         public async Task Test_LogIn_Success()
         {
             _userServices.Setup(u => u.LogIn(It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(1);
 
             var controller = new UserController(_userServices.Object, _config.Object);
             var response = await controller.LogIn(new LogInAccountRequest());
