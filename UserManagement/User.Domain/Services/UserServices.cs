@@ -94,6 +94,23 @@ namespace User.Domain.Services
             return coreUser;
 
         }
+        /// <summary>
+        /// Method to get Core User Object by User ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Core User</returns>
+
+        public async Task<CoreUser> GetUserById(long id)
+        {
+            var dbUser = await _userRepository.GetUserByUserId(id);
+            if(dbUser == null)
+            {
+                throw new Exception("User does not exist");
+            }
+
+            CoreUser coreUser = EfUserMapper.DbToCoreUser(dbUser);
+            return coreUser;
+        }
                      
         /// <summary>
         /// Method to log user in with email

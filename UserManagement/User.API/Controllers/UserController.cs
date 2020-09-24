@@ -45,7 +45,7 @@ namespace User.API.Controllers
                 var id = await _userServices.CreateNewUserAccount(coreUser);
                 var tokenstring = GenerateJsonWebToken();
 
-                return StatusCode(201, new { userId = id, token = tokenstring});
+                return StatusCode(201, new { userId = id, token = tokenstring });
             }
             catch (Exception e)
             {
@@ -68,8 +68,9 @@ namespace User.API.Controllers
             }
         }
 
-        
-        [HttpGet]              
+
+        [HttpGet]
+        [Route("email")]
         public async Task<IActionResult> GetUserByEmail([FromQuery]string email)
         {
             try
@@ -81,6 +82,21 @@ namespace User.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetUserById(long id)
+        {
+            try
+            {
+                return Ok(await _userServices.GetUserById(id));
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
 
         [HttpPatch]
         [AllowAnonymous]
@@ -136,12 +152,14 @@ namespace User.API.Controllers
         }
 
         [HttpPatch]
-        [Route("updateName")]
-        public async Task<IActionResult> UpdateUserName([FromBody] UpdateNameAccountRequest updateName)
+        [Route("updateuser")]
+        public async Task<IActionResult> UpdateUserName([FromBody] UpdateAccountRequest updateUser)
         {
             try
             {
-                await _userServices.UpdateName(updateName.UserId, updateName.NameType, updateName.Name);
+                await _userServices.UpdateName(updateUser.UserId, updateUser.NameType, updateUser.Name);
+                await _userServices.UpdateUserEmail(updateUser.UserId, updateUser.Email);
+                await _userServices.UpdateUserPassword(updateUser.UserId, updateUser.Password);
                 return Ok();
             }
             catch(Exception e)

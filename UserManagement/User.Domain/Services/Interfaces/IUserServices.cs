@@ -11,6 +11,7 @@ namespace User.Domain.Services.Interfaces
 
         // --------- pull user object ----------\\ 
         Task<CoreUser> GetUserByEmail(string email);
+        Task<CoreUser> GetUserById(long id);
 
 
         // --------- update user --------------- \\ 
