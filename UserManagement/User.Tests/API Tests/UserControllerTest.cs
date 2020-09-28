@@ -151,7 +151,7 @@ namespace User.Tests.API_Tests
                 .Returns(Task.CompletedTask);
 
             var controller = new UserController(_userServices.Object, _config.Object);
-            var response = await controller.UpdateUserName(new UpdateAccountRequest());
+            var response = await controller.UpdateUser(new UpdateAccountRequest());
 
             Assert.NotNull(response);
             Assert.AreEqual(200, ((StatusCodeResult)response).StatusCode);
@@ -164,7 +164,7 @@ namespace User.Tests.API_Tests
                 .ThrowsAsync(new Exception());
 
             var controller = new UserController(_userServices.Object, _config.Object);
-            var response = await controller.UpdateUserName(new UpdateAccountRequest());
+            var response = await controller.UpdateUser(new UpdateAccountRequest());
 
             Assert.NotNull(response);
             Assert.AreEqual(500, ((ObjectResult)response).StatusCode);

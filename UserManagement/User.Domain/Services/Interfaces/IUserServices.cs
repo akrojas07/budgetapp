@@ -17,7 +17,7 @@ namespace User.Domain.Services.Interfaces
         // --------- update user --------------- \\ 
         Task UpdateUserEmail(long userId, string email);
         Task UpdateUserPassword(long userId, string password);
-        Task UpdateName(long userId, string nameType, string name);
+        Task UpdateName(long userId, string firstName, string lastName);
         Task<long> LogIn(string userEmail, string password);
         Task LogOut(long userId);
         

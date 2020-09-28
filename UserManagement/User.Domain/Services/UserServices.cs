@@ -168,7 +168,7 @@ namespace User.Domain.Services
         /// <param name="nameType">Refers to either first name or last name</param>
         /// <param name="name"></param>
         /// <returns>Completed Task if name is updated</returns>
-        public async Task UpdateName(long userId, string nameType, string name)
+        public async Task UpdateName(long userId, string firstName, string lastName)
         {
             //pull user object
             var user = await _userRepository.GetUserByUserId(userId);
@@ -179,7 +179,7 @@ namespace User.Domain.Services
                 throw new Exception("User does not exist");
             }
 
-            await _userRepository.UpdateName(userId, nameType, name);
+            await _userRepository.UpdateName(userId, firstName, lastName);
 
         }
 
@@ -192,37 +192,16 @@ namespace User.Domain.Services
         public async Task UpdateUserEmail(long userId, string email)
         {
             // new user instance
-            UserAccount userE = null;
-
-            try
-            {
-                //pull user by email address 
-                 userE = await _userRepository.GetUserByEmail(email);
-            }
-            catch(Exception)
-            {
-                try
-                {
-                    //if email address is not associated to existing user, pull user by user id
-                    var userI = await _userRepository.GetUserByUserId(userId);
-                    await _userRepository.UpdateUserEmail(userI.Id, email);
-
-                }
-                catch (Exception)
-                {
-                    throw new Exception("User User does not exist");
-                }
-
-            }
-
-            //validate that userE is null
-            // if not null, don't allow the email address update
-
-            if (userE != null)
+            UserAccount userE = await _userRepository.GetUserByEmail(email);
+                
+            if(userE.Id != userId)
             {
                 throw new Exception("This email is associated to a different account, please try again");
             }
+
+            await _userRepository.UpdateUserEmail(userId, email);
         }
+
         /// <summary>
         /// Method to update user password
         /// </summary>

@@ -195,9 +195,7 @@ namespace User.Tests.Domain_Tests
         public async Task Test_UpdateUserEmail_Success()
         {
             _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
-                .ThrowsAsync(new Exception());
-            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>()))
-                .ReturnsAsync(new UserAccount());
+                .ReturnsAsync(new UserAccount() { Id = 1});
             _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
@@ -211,8 +209,6 @@ namespace User.Tests.Domain_Tests
         {
             _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
                 .ThrowsAsync(new Exception());
-            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>()))
-                .Throws<Exception>();
             _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
@@ -225,9 +221,7 @@ namespace User.Tests.Domain_Tests
         public void Test_UpdateUserEmail_ExistingEmail()
         {
             _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
-                .ReturnsAsync(new UserAccount());
-            _userRepository.Setup(u => u.GetUserByUserId(It.IsAny<long>()))
-                .ReturnsAsync(new UserAccount());
+                .ReturnsAsync(new UserAccount() { Id = 2 });
             _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 

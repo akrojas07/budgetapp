@@ -134,7 +134,7 @@ namespace User.Infrastructure.Repository.UserRepositories
             }
         }
 
-        public async Task UpdateName(long userId, string nameType, string name)
+        public async Task UpdateName(long userId, string firstName, string lastName)
         {
             using (var context = new BudgetAppContext())
             {
@@ -145,15 +145,9 @@ namespace User.Infrastructure.Repository.UserRepositories
                     throw new Exception("User not found");
                 }
 
-                switch(nameType.ToLower())
-                {
-                    case "first":
-                        dbUser.FirstName = name;
-                        break;
-                    case "last":
-                        dbUser.LastName = name;
-                        break;
-                }
+                dbUser.FirstName = firstName;
+                dbUser.LastName = lastName; 
+
                 dbUser.Updated = DateTime.Now;
                 await context.SaveChangesAsync();
 

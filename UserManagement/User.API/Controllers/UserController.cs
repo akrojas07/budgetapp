@@ -153,13 +153,12 @@ namespace User.API.Controllers
 
         [HttpPatch]
         [Route("updateuser")]
-        public async Task<IActionResult> UpdateUserName([FromBody] UpdateAccountRequest updateUser)
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateAccountRequest updateUser)
         {
             try
             {
-                await _userServices.UpdateName(updateUser.UserId, updateUser.NameType, updateUser.Name);
+                await _userServices.UpdateName(updateUser.UserId, updateUser.FirstName, updateUser.LastName);
                 await _userServices.UpdateUserEmail(updateUser.UserId, updateUser.Email);
-                await _userServices.UpdateUserPassword(updateUser.UserId, updateUser.Password);
                 return Ok();
             }
             catch(Exception e)
