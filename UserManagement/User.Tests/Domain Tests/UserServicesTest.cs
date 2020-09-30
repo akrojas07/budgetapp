@@ -195,7 +195,7 @@ namespace User.Tests.Domain_Tests
         public async Task Test_UpdateUserEmail_Success()
         {
             _userRepository.Setup(u => u.GetUserByEmail(It.IsAny<string>()))
-                .ReturnsAsync(new UserAccount() { Id = 1});
+                .ThrowsAsync(new Exception("User not found"));
             _userRepository.Setup(u => u.UpdateUserEmail(It.IsAny<long>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 

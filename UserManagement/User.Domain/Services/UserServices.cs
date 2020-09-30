@@ -192,14 +192,27 @@ namespace User.Domain.Services
         public async Task UpdateUserEmail(long userId, string email)
         {
             // new user instance
-            UserAccount userE = await _userRepository.GetUserByEmail(email);
+            UserAccount user = null;
+            try
+            {
+                user = await _userRepository.GetUserByEmail(email);
+
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Equals("User not found"))
+                {
+                    await _userRepository.UpdateUserEmail(userId, email);
+                    return;
+                }
+
+                throw;
+            }
                 
-            if(userE.Id != userId)
+            if(user.Id != userId)
             {
                 throw new Exception("This email is associated to a different account, please try again");
             }
-
-            await _userRepository.UpdateUserEmail(userId, email);
         }
 
         /// <summary>
