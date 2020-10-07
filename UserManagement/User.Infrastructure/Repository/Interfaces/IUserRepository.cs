@@ -9,7 +9,7 @@ namespace User.Infrastructure.Repository.Interfaces
     public interface IUserRepository
     {
         // --------- create new user ----------\\
-        Task CreateNewUserAccount(UserAccount user);
+        Task<long> CreateNewUserAccount(UserAccount user);
 
         
         // --------- pull user object ----------\\ 
@@ -21,10 +21,10 @@ namespace User.Infrastructure.Repository.Interfaces
         // --------- update user --------------- \\ remember to update the "updated" date property
         Task UpdateUserEmail(long userId, string email);
         Task UpdateUserPassword(long userId, byte[] password);
-        
+
         //name type is either first name or last name 
-        Task UpdateName(long userId, string nameType, string name);
-        Task UpdateStatus(long userId, bool status);
+        Task UpdateName(long userId, string firstName, string lastName);
+        Task <long> UpdateStatus(long userId, bool status);
 
 
 

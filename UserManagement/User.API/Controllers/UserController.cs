@@ -28,6 +28,7 @@ namespace User.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [Route("signUp")]
         public async Task<IActionResult> CreateNewUserAccount([FromBody]CreateNewUserAccountRequest createNewUserAccount)
         {
             try
@@ -41,9 +42,10 @@ namespace User.API.Controllers
                     Status = true
                 };
 
-                await _userServices.CreateNewUserAccount(coreUser);
+                var id = await _userServices.CreateNewUserAccount(coreUser);
+                var tokenstring = GenerateJsonWebToken();
 
-                return StatusCode(201);
+                return StatusCode(201, new { userId = id, token = tokenstring });
             }
             catch (Exception e)
             {
@@ -66,8 +68,9 @@ namespace User.API.Controllers
             }
         }
 
-        
-        [HttpGet]              
+
+        [HttpGet]
+        [Route("email")]
         public async Task<IActionResult> GetUserByEmail([FromQuery]string email)
         {
             try
@@ -80,6 +83,21 @@ namespace User.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetUserById(long id)
+        {
+            try
+            {
+                return Ok(await _userServices.GetUserById(id));
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
         [HttpPatch]
         [AllowAnonymous]
         [Route("login")]
@@ -88,10 +106,10 @@ namespace User.API.Controllers
         {
             try
             {
-                await _userServices.LogIn(login.Email, login.Password);
+                long userId = await _userServices.LogIn(login.Email, login.Password);
                 var tokenstring = GenerateJsonWebToken();
 
-                return Ok(new { token = tokenstring});
+                return Ok(new {token = tokenstring, userId = userId});
             }
             catch(ArgumentException)
             {
@@ -134,12 +152,13 @@ namespace User.API.Controllers
         }
 
         [HttpPatch]
-        [Route("updateName")]
-        public async Task<IActionResult> UpdateUserName([FromBody] UpdateNameAccountRequest updateName)
+        [Route("updateuser")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateAccountRequest updateUser)
         {
             try
             {
-                await _userServices.UpdateName(updateName.UserId, updateName.NameType, updateName.Name);
+                await _userServices.UpdateName(updateUser.UserId, updateUser.FirstName, updateUser.LastName);
+                await _userServices.UpdateUserEmail(updateUser.UserId, updateUser.Email);
                 return Ok();
             }
             catch(Exception e)
