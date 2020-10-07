@@ -1,5 +1,6 @@
 ﻿using DomainUser = User.Domain.Models.CoreUser;
 using DbUser = User.Infrastructure.Repository.Entities.UserAccount;
+using User.Domain.Services;
 
 namespace User.Domain.DbMapper
 { 
@@ -14,6 +15,7 @@ namespace User.Domain.DbMapper
                 FirstName = dbUser.FirstName,
                 LastName = dbUser.LastName,
                 Status = dbUser.Status
+                
             };
 
             return user;

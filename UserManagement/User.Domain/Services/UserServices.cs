@@ -25,16 +25,13 @@ namespace User.Domain.Services
         /// </summary>
         /// <param name="coreUser"></param>
         /// <returns>Completed Task if new user account is created</returns>
-        public async Task CreateNewUserAccount(CoreUser coreUser)
+        public async Task<long> CreateNewUserAccount(CoreUser coreUser)
         {
-            UserAccount existingUser = null; 
-
             try
             {
                 //pull any user that exists with email address provided
-                existingUser = await _userRepository.GetUserByEmail(coreUser.Email);
+                var existingUser = await _userRepository.GetUserByEmail(coreUser.Email);
             }
-
             catch(Exception) 
             {
                 //map from core to db user
@@ -47,15 +44,13 @@ namespace User.Domain.Services
                 dbUser.Password = hashCode;
 
                 //create new user account with repository method
-                await _userRepository.CreateNewUserAccount(dbUser);
+                var userId = await _userRepository.CreateNewUserAccount(dbUser);
 
+                return userId;
             }
             
             //validate that user is null
-            if(existingUser != null)
-            {
-                throw new Exception("User with associated email exists.");
-            }
+            throw new Exception("User with associated email exists.");
         }
 
         /// <summary>
@@ -99,6 +94,23 @@ namespace User.Domain.Services
             return coreUser;
 
         }
+        /// <summary>
+        /// Method to get Core User Object by User ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Core User</returns>
+
+        public async Task<CoreUser> GetUserById(long id)
+        {
+            var dbUser = await _userRepository.GetUserByUserId(id);
+            if(dbUser == null)
+            {
+                throw new Exception("User does not exist");
+            }
+
+            CoreUser coreUser = EfUserMapper.DbToCoreUser(dbUser);
+            return coreUser;
+        }
                      
         /// <summary>
         /// Method to log user in with email
@@ -106,8 +118,8 @@ namespace User.Domain.Services
         /// </summary>
         /// <param name="userEmail"></param>
         /// <param name="password"></param>
-        /// <returns>Completed Task if log in successful</returns>
-        public async Task LogIn(string userEmail, string password)
+        /// <returns>User Id if successful</returns>
+        public async Task<long> LogIn(string userEmail, string password)
         {
             //pull user object
             var user = await _userRepository.GetUserByEmail(userEmail);
@@ -126,6 +138,8 @@ namespace User.Domain.Services
 
             //log user in
             await _userRepository.UpdateStatus(user.Id, true);
+
+            return user.Id;
         }
         /// <summary>
         /// Method to log user out
@@ -154,7 +168,7 @@ namespace User.Domain.Services
         /// <param name="nameType">Refers to either first name or last name</param>
         /// <param name="name"></param>
         /// <returns>Completed Task if name is updated</returns>
-        public async Task UpdateName(long userId, string nameType, string name)
+        public async Task UpdateName(long userId, string firstName, string lastName)
         {
             //pull user object
             var user = await _userRepository.GetUserByUserId(userId);
@@ -165,7 +179,7 @@ namespace User.Domain.Services
                 throw new Exception("User does not exist");
             }
 
-            await _userRepository.UpdateName(userId, nameType, name);
+            await _userRepository.UpdateName(userId, firstName, lastName);
 
         }
 
@@ -178,37 +192,29 @@ namespace User.Domain.Services
         public async Task UpdateUserEmail(long userId, string email)
         {
             // new user instance
-            UserAccount userE = null;
-
+            UserAccount user = null;
             try
             {
-                //pull user by email address 
-                 userE = await _userRepository.GetUserByEmail(email);
+                user = await _userRepository.GetUserByEmail(email);
+
             }
-            catch(Exception)
+            catch (Exception ex)
             {
-                try
+                if (ex.Message.Equals("User not found"))
                 {
-                    //if email address is not associated to existing user, pull user by user id
-                    var userI = await _userRepository.GetUserByUserId(userId);
-                    await _userRepository.UpdateUserEmail(userI.Id, email);
-
-                }
-                catch (Exception)
-                {
-                    throw new Exception("User User does not exist");
+                    await _userRepository.UpdateUserEmail(userId, email);
+                    return;
                 }
 
+                throw;
             }
-
-            //validate that userE is null
-            // if not null, don't allow the email address update
-
-            if (userE != null)
+                
+            if(user.Id != userId)
             {
                 throw new Exception("This email is associated to a different account, please try again");
             }
         }
+
         /// <summary>
         /// Method to update user password
         /// </summary>

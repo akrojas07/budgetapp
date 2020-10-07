@@ -12,7 +12,7 @@ namespace User.Infrastructure.Repository.UserRepositories
 { //Package Manager Console => Scaffold-DbContext "Server=DESKTOP-LQ9NL1I;Database=BudgetApp;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Repository/Entities -f
     public class UserRepository : IUserRepository
     {
-        public async Task CreateNewUserAccount(DbUser user)
+        public async Task<long> CreateNewUserAccount(DbUser user)
         {
             using(var context = new BudgetAppContext())
             {
@@ -24,6 +24,8 @@ namespace User.Infrastructure.Repository.UserRepositories
                 context.UserAccount.Add(user);
 
                 await context.SaveChangesAsync();
+
+                return user.Id;
             }
         }
 
@@ -95,7 +97,7 @@ namespace User.Infrastructure.Repository.UserRepositories
 
         }
 
-        public async Task UpdateStatus(long userId, bool status)
+        public async Task<long> UpdateStatus(long userId, bool status)
         {
             using (var context = new BudgetAppContext())
             {
@@ -103,12 +105,14 @@ namespace User.Infrastructure.Repository.UserRepositories
 
                 if(dbUser == null)
                 {
-                    return;
+                    throw new Exception("User not found");
                 }
-
+                
                 dbUser.Status = status;
-
+                dbUser.Updated = DateTime.Now;
                 await context.SaveChangesAsync();
+
+                return dbUser.Id;
             }
         }
 
@@ -122,14 +126,15 @@ namespace User.Infrastructure.Repository.UserRepositories
                 {
                     throw new Exception("User not found");
                 }
-
+                
                 dbUser.Email = email;
+                dbUser.Updated = DateTime.Now;
                 await context.SaveChangesAsync();
 
             }
         }
 
-        public async Task UpdateName(long userId, string nameType, string name)
+        public async Task UpdateName(long userId, string firstName, string lastName)
         {
             using (var context = new BudgetAppContext())
             {
@@ -140,16 +145,10 @@ namespace User.Infrastructure.Repository.UserRepositories
                     throw new Exception("User not found");
                 }
 
-                switch(nameType.ToLower())
-                {
-                    case "first":
-                        dbUser.FirstName = name;
-                        break;
-                    case "last":
-                        dbUser.LastName = name;
-                        break;
-                }
+                dbUser.FirstName = firstName;
+                dbUser.LastName = lastName; 
 
+                dbUser.Updated = DateTime.Now;
                 await context.SaveChangesAsync();
 
             }
@@ -167,7 +166,7 @@ namespace User.Infrastructure.Repository.UserRepositories
                 }
 
                 dbUser.Password = password;
-
+                dbUser.Updated = DateTime.Now;
                 await context.SaveChangesAsync();
 
 

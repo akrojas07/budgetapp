@@ -16,3 +16,7 @@ UserManagement/User.Infrastructure/obj/
 UserManagement/User.Tests/bin/
 
 UserManagement/User.Tests/obj/
+
+UserManagement/User.API/.config/
+
+UserManagement/User.API/Properties/PublishProfiles/
