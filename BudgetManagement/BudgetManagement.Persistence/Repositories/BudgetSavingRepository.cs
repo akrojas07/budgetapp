@@ -65,6 +65,28 @@ namespace BudgetManagement.Persistence.Repositories
         }
 
         /// <summary>
+        /// Method to pull single savings record by saving id 
+        /// </summary>
+        /// <param name="savingId"></param>
+        /// <returns>Budget Savings Object</returns>
+        public async Task<BudgetSavings> GetSavingBySavingId(long savingId)
+        {
+            using(var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                var parameter = new DynamicParameters();
+                parameter.Add("@SavingId", savingId);
+
+                var budgetSaving = await connection.QueryFirstOrDefaultAsync("dbo.GetSavingBySavingId", parameter, commandType: CommandType.StoredProcedure);
+
+                connection.Close();
+
+                return budgetSaving;
+            }
+        }
+
+        /// <summary>
         /// Method to remove existing saving item
         /// </summary>
         /// <param name="savingId"></param>

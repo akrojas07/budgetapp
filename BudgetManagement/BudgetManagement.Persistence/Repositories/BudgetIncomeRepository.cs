@@ -111,5 +111,27 @@ namespace BudgetManagement.Persistence.Repositories
                 connection.Close();
             }
         }
+
+        /// <summary>
+        /// Method to pull single income record by income id 
+        /// </summary>
+        /// <param name="incomeId"></param>
+        /// <returns>BudgetIncome object</returns>
+        public async Task<BudgetIncome> GetIncomeByIncomeId(long incomeId)
+        {
+            using(var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                var parameter = new DynamicParameters();
+                parameter.Add("@IncomeId", incomeId);
+
+                var budgetIncome = await connection.QueryFirstOrDefaultAsync("dbo.GetIncomeByIncomeId", parameter, commandType: CommandType.StoredProcedure);
+
+                connection.Close();
+
+                return budgetIncome;
+            }
+        }
     }
 }

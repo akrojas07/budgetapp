@@ -13,5 +13,6 @@ namespace BudgetManagement.Persistence.Repositories.Interfaces
         Task AddNewSaving(BudgetSavings budgetSavings);
         Task UpdateSaving(long savingId, decimal savingAmount);
         Task RemoveSaving(long savingId);
+        Task<BudgetSavings> GetSavingBySavingId(long savingId);
     }
 }

@@ -69,6 +69,28 @@ namespace BudgetManagement.Persistence.Repositories
         }
 
         /// <summary>
+        /// Method to pull single expense record by expense id 
+        /// </summary>
+        /// <param name="expenseId"></param>
+        /// <returns>Budget Expenses object</returns>
+        public async Task<BudgetExpenses> GetExpenseByExpenseId(long expenseId)
+        {
+            using(var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@ExpenseId", expenseId);
+
+                var budgetExpense = await connection.QueryFirstOrDefaultAsync("dbo.GetExpenseByExpenseId", parameters, commandType: CommandType.StoredProcedure);
+
+                connection.Close();
+
+                return budgetExpense;
+            }
+        }
+
+        /// <summary>
         /// Method to remove existing expense
         /// </summary>
         /// <param name="budgetId"></param>

@@ -12,6 +12,7 @@ namespace BudgetManagement.Persistence.Repositories.Interfaces
         Task UpdateIncome(long incomeId, decimal incomeAmount);
         Task AddNewIncome(BudgetIncome budgetIncome);
         Task RemoveIncome(long incomeId);
+        Task<BudgetIncome> GetIncomeByIncomeId(long incomeId);
 
     }
 }
