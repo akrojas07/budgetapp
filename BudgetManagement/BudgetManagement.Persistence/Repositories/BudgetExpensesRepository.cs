@@ -28,7 +28,7 @@ namespace BudgetManagement.Persistence.Repositories
         /// Method to add new expense object
         /// </summary>
         /// <param name="budgetExpenses"></param>
-        /// <returns> void </returns>
+        /// <returns> Task Complete  </returns>
         public async Task AddNewExpense(BudgetExpenses budgetExpenses)
         {
             using(var conn = new SqlConnection(_connectionString))
@@ -93,8 +93,8 @@ namespace BudgetManagement.Persistence.Repositories
         /// <summary>
         /// Method to remove existing expense
         /// </summary>
-        /// <param name="budgetId"></param>
-        /// <returns> void </returns>
+        /// <param name="expenseId"></param>
+        /// <returns> Task Complete  </returns>
 
         public async Task RemoveExpense(long expenseId)
         {
@@ -114,10 +114,11 @@ namespace BudgetManagement.Persistence.Repositories
         /// <summary>
         /// Method to update existing expense 
         /// </summary>
-        /// <param name="budgetId"></param>
-        /// <returns> void</returns>
+        /// <param name="expenseId"></param>
+        /// <param name="expenseAmount"></param>
+        /// <returns> Task Complete </returns>
 
-        public async Task UpdateExpense(long expenseId)
+        public async Task UpdateExpense(long expenseId, decimal expenseAmount)
         {
             using(var connection = new SqlConnection(_connectionString))
             {
@@ -125,6 +126,7 @@ namespace BudgetManagement.Persistence.Repositories
 
                 var parameter = new DynamicParameters();
                 parameter.Add("@ExpenseId", expenseId);
+                parameter.Add("@ExpenseAmount", expenseAmount);
 
                 await connection.ExecuteAsync("dbo.UpdateExpense", parameter, commandType: CommandType.StoredProcedure);
 
