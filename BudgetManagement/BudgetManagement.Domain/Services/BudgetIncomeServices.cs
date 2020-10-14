@@ -24,14 +24,13 @@ namespace BudgetManagement.Domain.Services
         /// <returns>Task Complete</returns>
         public async Task AddNewIncome(BudgetIncomeModel incomeModel)
         {
+            //validate income was passed
+            if(incomeModel == null)
+            {
+                throw new ArgumentException("Income not provided");
+            }
             //convert core income model to database income entity 
             var dbIncomeEntity = AdoIncomeMapper.CoreModelToDbEntityNew(incomeModel);
-
-            //validate conversion was successful
-            if(dbIncomeEntity == null)
-            {
-                throw new Exception("Income could not be added");
-            }
 
             //add new income
             await _incomeRepository.AddNewIncome(dbIncomeEntity);
@@ -49,6 +48,11 @@ namespace BudgetManagement.Domain.Services
 
             //pull all income by user id from db
             var dbIncomeList = await _incomeRepository.GetAllIncomeByUserId(userId);
+
+            if(dbIncomeList == null)
+            {
+                throw new Exception("Income not found");
+            }
 
             //convert from db income entity to core income model 
             foreach(var income in dbIncomeList)

@@ -25,14 +25,13 @@ namespace BudgetManagement.Domain.Services
         /// <returns>Task complete</returns>
         public async Task AddNewExpense(BudgetExpensesModel expensesModel)
         {
+            if(expensesModel == null)
+            {
+                throw new ArgumentException("Expense not found");
+            }
+
             //convert core expense model to db expense entity 
             var dbExpenseEntity = AdoExpensesMapper.CoreModelToDbEntityNew(expensesModel);
-
-            //validate conversion
-            if(dbExpenseEntity == null)
-            {
-                throw new Exception("Expense was not added");
-            }
 
             await _expensesRepository.AddNewExpense(dbExpenseEntity);
         }
@@ -49,6 +48,11 @@ namespace BudgetManagement.Domain.Services
 
             //pull db expense entity list
             var dbExpenseList = await _expensesRepository.GetAllExpensesByUserId(userId);
+
+            if(dbExpenseList == null)
+            {
+                throw new Exception("Expenses not found");
+            }
 
             //convert from db entity to core model
             foreach(var expense in dbExpenseList)

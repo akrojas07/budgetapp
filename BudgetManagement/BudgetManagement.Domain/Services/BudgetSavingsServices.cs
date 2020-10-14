@@ -25,17 +25,14 @@ namespace BudgetManagement.Domain.Services
         /// <returns>Task Complete </returns>
         public async Task AddNewSaving(BudgetSavingsModel budgetSavingsModel)
         {
-            try
+            if(budgetSavingsModel == null)
             {
-                //map domain to db budgetSavingsModel
-                var dbSavingsEntity = Mapper.CoreToDbEntityNew(budgetSavingsModel);
-                await _savingsRepository.AddNewSaving(dbSavingsEntity);
-            }
-            catch(Exception e)
-            {
-                throw new Exception($"This is an exception from the service task {e}");
+                throw new ArgumentException("Savings not provided");
             }
 
+            //map domain to db budgetSavingsModel
+            var dbSavingsEntity = Mapper.CoreToDbEntityNew(budgetSavingsModel);
+            await _savingsRepository.AddNewSaving(dbSavingsEntity);
 
         }
 
@@ -52,6 +49,11 @@ namespace BudgetManagement.Domain.Services
 
             //pull dabatase savings list by user id
             var savingsList = await _savingsRepository.GetAllSavingsByUserId(userId);
+
+            if(savingsList == null)
+            {
+                throw new Exception("Savings not found");
+            }
 
             //convert savings list from db savings entity to core savings model and store in core savings model list
             foreach (var saving in savingsList)
