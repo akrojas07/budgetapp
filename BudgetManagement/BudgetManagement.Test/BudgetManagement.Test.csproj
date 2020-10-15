@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="API Tests\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BudgetManagement.API\BudgetManagement.API.csproj" />
     <ProjectReference Include="..\BudgetManagement.Domain\BudgetManagement.Domain.csproj" />
   </ItemGroup>
