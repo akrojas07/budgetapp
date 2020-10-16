@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace BudgetManagement.API.Models.SavingsModels
 {
-    public class AddNewSavingRequest: BaseClassRequest
+    public class UpdateSavingRequest:BaseSavingsRequest
     {
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Savings Type required")]
-        public string SavingsType { get; set; }
-
-        [Required(ErrorMessage = "Savings Amount required")]
+        [Required(ErrorMessage ="SavingsAmount Required")]
         public decimal? SavingsAmount { get; set; }
     }
 }

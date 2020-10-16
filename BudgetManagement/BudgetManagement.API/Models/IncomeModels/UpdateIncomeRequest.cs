@@ -9,6 +9,6 @@ namespace BudgetManagement.API.Models.IncomeModels
     public class UpdateIncomeRequest:BaseIncomeRequest
     {
         [Required(ErrorMessage ="Income Amount Required")]
-        public decimal IncomeAmount { get; set; }
+        public decimal? IncomeAmount { get; set; }
     }
 }

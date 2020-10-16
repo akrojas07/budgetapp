@@ -38,8 +38,8 @@ namespace BudgetManagement.API.Controllers
             {
                 BudgetExpensesModel coreExpensesModel = new BudgetExpensesModel()
                 {
-                    UserId = newExpenseRequest.UserId,
-                    ExpenseAmount = newExpenseRequest.ExpenseAmount,
+                    UserId = (long)newExpenseRequest.UserId,
+                    ExpenseAmount = (decimal)newExpenseRequest.ExpenseAmount,
                     ExpenseType = newExpenseRequest.ExpenseType
                 };
 
@@ -68,7 +68,7 @@ namespace BudgetManagement.API.Controllers
 
             try
             {
-                return Ok(await _expenseServices.GetExpensesByUserId(userId.UserId));
+                return Ok(await _expenseServices.GetExpensesByUserId((long)userId.UserId));
                 
             }
             catch(ArgumentException ae)
@@ -92,7 +92,7 @@ namespace BudgetManagement.API.Controllers
 
             try
             {
-                await _expenseServices.RemoveExpense(removeExpense.ExpenseId);
+                await _expenseServices.RemoveExpense((long)removeExpense.ExpenseId);
                 return Ok();
             }
             catch (Exception e)
@@ -111,7 +111,7 @@ namespace BudgetManagement.API.Controllers
 
             try
             {
-                await _expenseServices.UpdateExpense(expenseRequest.ExpenseId, expenseRequest.ExpenseAmount);
+                await _expenseServices.UpdateExpense((long)expenseRequest.ExpenseId, (decimal)expenseRequest.ExpenseAmount);
                 return Ok();
             }
             catch (ArgumentException ae)

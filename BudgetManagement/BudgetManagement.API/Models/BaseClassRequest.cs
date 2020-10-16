@@ -9,6 +9,6 @@ namespace BudgetManagement.API.Models
     public class BaseClassRequest
     {
         [Required(ErrorMessage ="User ID is required")]
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
     }
 }

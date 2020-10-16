@@ -9,6 +9,6 @@ namespace BudgetManagement.API.Models.IncomeModels
     public class BaseIncomeRequest
     {
         [Required(ErrorMessage ="Income ID required")]
-        public long IncomeId { get; set; }
+        public long? IncomeId { get; set; }
     }
 }

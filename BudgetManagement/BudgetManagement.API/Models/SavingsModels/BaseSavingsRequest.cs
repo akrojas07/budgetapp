@@ -9,6 +9,6 @@ namespace BudgetManagement.API.Models.SavingsModels
     public class BaseSavingsRequest
     {
         [Required(ErrorMessage ="Savings ID required")]
-        public long SavingsId { get; set; }
+        public long? SavingsId { get; set; }
     }
 }

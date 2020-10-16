@@ -20,6 +20,10 @@ namespace BudgetManagement.API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddControllers();
+            services.AddCors();
+
             services.AddSingleton<IBudgetExpensesRepository, BudgetExpensesRepository>();
             services.AddSingleton<IBudgetIncomeRepository, BudgetIncomeRepository>();
             services.AddSingleton<IBudgetSavingsRepository, BudgetSavingRepository>();
@@ -41,6 +45,8 @@ namespace BudgetManagement.API
             }
 
             app.UseRouting();
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 
             app.UseEndpoints(endpoints =>
             {

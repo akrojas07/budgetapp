@@ -13,6 +13,6 @@ namespace BudgetManagement.API.Models.IncomeModels
         public string IncomeType { get; set; }
 
         [Required(ErrorMessage = "Income Amount required")]
-        public decimal IncomeAmount { get; set; }
+        public decimal? IncomeAmount { get; set; }
     }
 }

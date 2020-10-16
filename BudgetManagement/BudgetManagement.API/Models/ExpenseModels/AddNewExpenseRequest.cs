@@ -13,6 +13,6 @@ namespace BudgetManagement.API.Models.ExpenseModels
         public string ExpenseType { get; set; }
 
         [Required(ErrorMessage ="Expense Amount required")]
-        public decimal ExpenseAmount { get; set; }
+        public decimal? ExpenseAmount { get; set; }
     }
 }

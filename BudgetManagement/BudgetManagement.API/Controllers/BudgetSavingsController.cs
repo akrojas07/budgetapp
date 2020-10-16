@@ -1,4 +1,4 @@
-﻿using BudgetManagement.API.Models.IncomeModels;
+﻿using BudgetManagement.API.Models.SavingsModels;
 using BudgetManagement.Domain.Models;
 using BudgetManagement.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -9,36 +9,36 @@ using System.Threading.Tasks;
 
 namespace BudgetManagement.API.Controllers
 {
-    [Route("budget/income")]
+    [Route("budget/savings")]
     [ApiController]
-    public class BudgetIncomeController : ControllerBase
+    public class BudgetSavingsController: ControllerBase
     {
-        private IBudgetIncomeServices _incomeServices;
+        private readonly IBudgetSavingsServices _savingsServices;
 
-        public BudgetIncomeController(IBudgetIncomeServices incomeServices)
+        public BudgetSavingsController(IBudgetSavingsServices savingsServices)
         {
-            _incomeServices = incomeServices;
+            _savingsServices = savingsServices;
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewIncome(AddNewIncomeRequest newIncomeRequest)
+        public async Task<IActionResult> AddNewSaving(AddNewSavingRequest savingsRequest)
         {
-            if(newIncomeRequest == null)
+            if(savingsRequest == null)
             {
-                return StatusCode(400, "Income details not provided");
+                return StatusCode(400, "Bad Request");
             }
 
             try
             {
-                BudgetIncomeModel coreIncomeModel = new BudgetIncomeModel()
+                BudgetSavingsModel savingsModel = new BudgetSavingsModel()
                 {
-                    UserId = (long)newIncomeRequest.UserId,
-                    IncomeAmount = (decimal)newIncomeRequest.IncomeAmount,
-                    IncomeType = newIncomeRequest.IncomeType
-
+                    UserId = (long)savingsRequest.UserId,
+                    SavingsAmount = (decimal)savingsRequest.SavingsAmount,
+                    SavingsType = savingsRequest.SavingsType
                 };
 
-                await _incomeServices.AddNewIncome(coreIncomeModel);
+                await _savingsServices.AddNewSaving(savingsModel);
+
                 return StatusCode(201);
             }
             catch(ArgumentException ae)
@@ -47,67 +47,43 @@ namespace BudgetManagement.API.Controllers
             }
             catch(Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500,e.Message);
             }
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllIncomeByUserId(GetAllIncomeByUserIdRequest getAllIncome)
+        public async Task<IActionResult> GetAllSavingsByUserId(GetAllSavingsByUserIdRequest getRequest)
         {
-            if(getAllIncome == null)
+            if(getRequest == null)
             {
                 return StatusCode(400, "Bad Request");
             }
 
             try
             {
-                return Ok(await _incomeServices.GetAllIncomeByUserId((long)getAllIncome.UserId));
+                return Ok(await _savingsServices.GetAllSavingsByUserId((long)getRequest.UserId));
             }
-            catch(ArgumentException ae)
+            catch (ArgumentException ae)
             {
                 return StatusCode(400, ae.Message);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
-
         }
 
         [HttpDelete]
-        public async Task<IActionResult> RemoveIncome(RemoveIncomeRequest removeIncome)
+        public async Task<IActionResult> RemoveSaving(RemoveSavingRequest removeSaving)
         {
-            if(removeIncome == null)
+            if(removeSaving == null)
             {
                 return StatusCode(400, "Bad Request");
             }
 
             try
             {
-                await _incomeServices.RemoveIncome((long)removeIncome.IncomeId);
-                return Ok();
-            }
-            catch(ArgumentException ae)
-            {
-                return StatusCode(400, ae.Message);
-            }
-            catch(Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpPatch]
-        public async Task<IActionResult> UpdateIncome(UpdateIncomeRequest updateIncome)
-        {
-            if(updateIncome ==null)
-            {
-                return StatusCode(400, "Bad Request");
-            }
-
-            try
-            {
-                await _incomeServices.UpdateIncome((long)updateIncome.IncomeId, (decimal)updateIncome.IncomeAmount);
+                await _savingsServices.RemoveSaving((long)removeSaving.SavingsId);
                 return Ok();
             }
             catch (ArgumentException ae)
@@ -118,7 +94,29 @@ namespace BudgetManagement.API.Controllers
             {
                 return StatusCode(500, e.Message);
             }
+        }
 
+        [HttpPatch]
+        public async Task<IActionResult> UpdateSaving(UpdateSavingRequest updateSaving)
+        {
+            if(updateSaving == null)
+            {
+                return StatusCode(400, "Bad Request");
+            }
+
+            try
+            {
+                await _savingsServices.UpdateSaving((long)updateSaving.SavingsId, (decimal)updateSaving.SavingsAmount);
+                return Ok();
+            }
+            catch (ArgumentException ae)
+            {
+                return StatusCode(400, ae.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }

@@ -9,6 +9,6 @@ namespace BudgetManagement.API.Models.ExpenseModels
     public class BaseExpenseRequest
     {
         [Required(ErrorMessage ="Expense ID required")]
-        public long ExpenseId { get; set; }
+        public long? ExpenseId { get; set; }
     }
 }
