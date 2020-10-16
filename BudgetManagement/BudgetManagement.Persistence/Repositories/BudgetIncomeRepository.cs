@@ -130,7 +130,15 @@ namespace BudgetManagement.Persistence.Repositories
 
                 connection.Close();
 
-                return budgetIncome;
+                BudgetIncome income = new BudgetIncome()
+                {
+                    Id = budgetIncome.Id,
+                    UserId = budgetIncome.UserId,
+                    IncomeAmount = budgetIncome.IncomeAmount,
+                    IncomeType = budgetIncome.IncomeType
+                };
+
+                return income;
             }
         }
     }

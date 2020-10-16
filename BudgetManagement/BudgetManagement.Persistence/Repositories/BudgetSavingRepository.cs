@@ -82,7 +82,15 @@ namespace BudgetManagement.Persistence.Repositories
 
                 connection.Close();
 
-                return budgetSaving;
+                BudgetSavings saving = new BudgetSavings()
+                {
+                    Id = budgetSaving.Id,
+                    UserId = budgetSaving.UserId,
+                    SavingsAmount = budgetSaving.SavingsAmount,
+                    SavingsType = budgetSaving.SavingsType
+                };
+
+                return saving;
             }
         }
 

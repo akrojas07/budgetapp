@@ -86,7 +86,15 @@ namespace BudgetManagement.Persistence.Repositories
 
                 connection.Close();
 
-                return budgetExpense;
+                BudgetExpenses expense = new BudgetExpenses()
+                {
+                    Id = budgetExpense.Id,
+                    UserId = budgetExpense.UserId,
+                    ExpenseAmount = budgetExpense.ExpenseAmount,
+                    ExpenseType = budgetExpense.ExpenseType
+                };
+
+                return expense;
             }
         }
 
