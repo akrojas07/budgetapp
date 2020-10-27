@@ -27,6 +27,10 @@ namespace BudgetManagement.Domain.Services
             {
                 throw new ArgumentException("Budget Breakdown not found");
             }
+            if(budgetBreakdownModel.SavingsBreakdown + budgetBreakdownModel.ExpensesBreakdown > 100)
+            {
+                throw new Exception("Breakdown percents cannot exceed 100%");
+            }
 
             var dbBreakdown = AdoBudgetBreakdownMapper.NewCoreModelToDbEntity(budgetBreakdownModel);
             await _budgetBreakdownRepository.AddNewBudgetBreakdownByUserId(dbBreakdown);
@@ -99,14 +103,27 @@ namespace BudgetManagement.Domain.Services
                 throw new ArgumentException("Budget Breakdown not found");
             }
 
+            //validate inputs don't exceed 100
+            if (budgetBreakdownModel.SavingsBreakdown + budgetBreakdownModel.ExpensesBreakdown > 100)
+            {
+                throw new Exception("Breakdown percents cannot exceed 100%");
+            }
+
             //pull existing budget breakdown record 
             var dbBudgetBreakdown = await _budgetBreakdownRepository.GetBudgetBreakdownByUserId(budgetBreakdownModel.UserId);
+
+            //validate that the correct breakdown was pulled
+            if(budgetBreakdownModel.Id != dbBudgetBreakdown.Id)
+            {
+                throw new Exception("Budget Breakdown records do not match");
+            }
 
             //throw exception if not valid 
             if (dbBudgetBreakdown == null)
             {
                 throw new Exception("Budget Breakdown not found");
             }
+
 
             //map core model to db entity 
             var dbBudgetBreakdownEntity = AdoBudgetBreakdownMapper.ExistingCoreModelToDbEntity(budgetBreakdownModel);

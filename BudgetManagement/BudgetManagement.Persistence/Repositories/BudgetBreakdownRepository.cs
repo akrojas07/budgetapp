@@ -99,7 +99,9 @@ namespace BudgetManagement.Persistence.Repositories
 
                 connection.Close();
 
-                return dbBudgetType; 
+                string budgetType = dbBudgetType.budgetType;
+
+                return budgetType; 
             }
         }
 

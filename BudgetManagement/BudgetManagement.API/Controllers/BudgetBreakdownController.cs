@@ -13,7 +13,7 @@ namespace BudgetManagement.API.Controllers
     [ApiController]
     public class BudgetBreakdownController:ControllerBase
     {
-        private readonly IBudgetBreakdownServices _budgetBreakdownServices;
+        private IBudgetBreakdownServices _budgetBreakdownServices;
 
         public BudgetBreakdownController(IBudgetBreakdownServices breakdownServices)
         {
@@ -24,11 +24,23 @@ namespace BudgetManagement.API.Controllers
         [Route("newbreakdown")]
         public async Task<IActionResult> AddNewBudgetBreakdown([FromBody] AddNewBudgetBreakdownRequest newBreakdownRequest)
         {
+            /* validate inputs start */
             if(newBreakdownRequest == null)
             {
                 return StatusCode(400, "Budget Breakdown not provided");
             }
 
+            if (newBreakdownRequest.ExpensesBreakdown <= 0)
+            {
+                return StatusCode(400, "Expense Breakdown not provided");
+            }
+
+            if(newBreakdownRequest.SavingsBreakdown <= 0)
+            {
+                return StatusCode(400, "Savings Breakdown not provided");
+            }
+
+            /* validate inputs end*/
             try
             {
                 BudgetBreakdownModel coreBreakdownModel = new BudgetBreakdownModel()
@@ -61,6 +73,12 @@ namespace BudgetManagement.API.Controllers
             {
                 return StatusCode(400, "Budget Breakdown not provided");
             }
+
+            if(breakdownUserId.UserId <= 0)
+            {
+                return StatusCode(400, "User not provided");
+            }
+
             try
             {
                 return Ok(await _budgetBreakdownServices.GetBudgetBreakdownByUser((long)breakdownUserId.UserId));
@@ -84,6 +102,12 @@ namespace BudgetManagement.API.Controllers
             {
                 return StatusCode(400, "Budget Breakdown not provided");
             }
+
+            if (budgetTypeUserId.UserId <= 0)
+            {
+                return StatusCode(400, "User not provided");
+            }
+
             try
             {
                 return Ok(await _budgetBreakdownServices.GetBudgetTypeByUserId((long) budgetTypeUserId.UserId));
@@ -106,6 +130,12 @@ namespace BudgetManagement.API.Controllers
             {
                 return StatusCode(400, "Budget Breakdown not provided");
             }
+
+            if (removeBreakdown.UserId <= 0)
+            {
+                return StatusCode(400, "User not provided");
+            }
+
             try
             {
                 await _budgetBreakdownServices.RemoveBudgetBreakdownByUserId((long)removeBreakdown.UserId);
@@ -125,10 +155,29 @@ namespace BudgetManagement.API.Controllers
         [Route("updatebreakdown")]
         public async Task<IActionResult> UpdateBudgetBreakdownByUser(UpdateBudgetBreakdownRequest updateBreakdown)
         {
+            /*validate inputs - start*/
             if (updateBreakdown == null)
             {
                 return StatusCode(400, "Budget Breakdown not provided");
             }
+
+            if(updateBreakdown.UserId <= 0)
+            {
+                return StatusCode(400, "User not provided");
+            }
+
+            if(updateBreakdown.Id <= 0)
+            {
+                return StatusCode(400, "Budget Breakdown record not provided");
+            }
+
+            if(updateBreakdown.ExpensesBreakdown <= 0 || updateBreakdown.SavingsBreakdown <= 0)
+            {
+                return StatusCode(400, "Enter breakdown greater than 0");
+            }
+
+            /* validate inputs - end*/
+
             try
             {
                 await _budgetBreakdownServices.UpdateBudgetBreakdownByUserId(new BudgetBreakdownModel() 

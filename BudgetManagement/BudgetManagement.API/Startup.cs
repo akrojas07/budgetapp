@@ -27,8 +27,10 @@ namespace BudgetManagement.API
             services.AddSingleton<IBudgetExpensesRepository, BudgetExpensesRepository>();
             services.AddSingleton<IBudgetIncomeRepository, BudgetIncomeRepository>();
             services.AddSingleton<IBudgetSavingsRepository, BudgetSavingRepository>();
+            services.AddSingleton<IBudgetBreakdownRepository, BudgetBreakdownRepository>();
 
 
+            services.AddTransient<IBudgetBreakdownServices, BudgetBreakdownServices>(); 
             services.AddTransient<IBudgetIncomeServices, BudgetIncomeServices>();
             services.AddTransient<IBudgetExpensesServices, BudgetExpensesServices>();
             services.AddTransient<IBudgetSavingsServices, BudgetSavingsServices>();

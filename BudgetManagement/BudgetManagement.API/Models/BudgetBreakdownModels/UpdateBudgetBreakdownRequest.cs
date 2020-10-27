@@ -7,6 +7,6 @@ namespace BudgetManagement.API.Models.BudgetBreakdownModels
 {
     public class UpdateBudgetBreakdownRequest: BaseBudgetBreakdownRequest
     {
-        public long Id { get; }
+        public long Id { get; set; }
     }
 }
