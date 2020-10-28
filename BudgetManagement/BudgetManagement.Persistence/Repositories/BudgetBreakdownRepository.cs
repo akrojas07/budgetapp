@@ -61,22 +61,11 @@ namespace BudgetManagement.Persistence.Repositories
                 var parameter = new DynamicParameters();
                 parameter.Add("@UserId", userId);
 
-                var dbBudgetBreakdown = await connection.QueryFirstOrDefaultAsync("dbo.GetAllBudgetBreakdownByUserId", parameter, commandType: CommandType.StoredProcedure);
+                var dbBudgetBreakdown = await connection.QueryFirstOrDefaultAsync<BudgetBreakdown>("dbo.GetAllBudgetBreakdownByUserId", parameter, commandType: CommandType.StoredProcedure);
 
                 connection.Close();
 
-                BudgetBreakdown budgetBreakdown = new BudgetBreakdown()
-                {
-                    Id = dbBudgetBreakdown.Id,
-                    UserId = dbBudgetBreakdown.UserId,
-                    BudgetType = dbBudgetBreakdown.BudgetType,
-                    ExpensesBreakdown = dbBudgetBreakdown.Expenses,
-                    SavingsBreakdown = dbBudgetBreakdown.Savings
-
-                    
-                };
-
-                return budgetBreakdown;
+                return dbBudgetBreakdown;
             }
 
         }
@@ -95,13 +84,11 @@ namespace BudgetManagement.Persistence.Repositories
                 var parameter = new DynamicParameters();
                 parameter.Add("@UserId", userId);
 
-                var dbBudgetType = await connection.QueryFirstOrDefaultAsync("dbo.GetBudgetTypeByUserId", parameter, commandType: CommandType.StoredProcedure);
+                var dbBudgetType = await connection.QueryFirstOrDefaultAsync<string>("dbo.GetBudgetTypeByUserId", parameter, commandType: CommandType.StoredProcedure);
 
                 connection.Close();
 
-                string budgetType = dbBudgetType.budgetType;
-
-                return budgetType; 
+                return dbBudgetType; 
             }
         }
 

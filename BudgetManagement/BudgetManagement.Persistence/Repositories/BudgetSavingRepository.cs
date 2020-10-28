@@ -78,19 +78,11 @@ namespace BudgetManagement.Persistence.Repositories
                 var parameter = new DynamicParameters();
                 parameter.Add("@SavingId", savingId);
 
-                var budgetSaving = await connection.QueryFirstOrDefaultAsync("dbo.GetSavingBySavingId", parameter, commandType: CommandType.StoredProcedure);
+                var budgetSaving = await connection.QueryFirstOrDefaultAsync<BudgetSavings>("dbo.GetSavingBySavingId", parameter, commandType: CommandType.StoredProcedure);
 
                 connection.Close();
 
-                BudgetSavings saving = new BudgetSavings()
-                {
-                    Id = budgetSaving.Id,
-                    UserId = budgetSaving.UserId,
-                    SavingsAmount = budgetSaving.SavingsAmount,
-                    SavingsType = budgetSaving.SavingsType
-                };
-
-                return saving;
+                return budgetSaving;
             }
         }
 

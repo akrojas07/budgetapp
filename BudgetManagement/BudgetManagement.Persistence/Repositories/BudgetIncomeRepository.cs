@@ -35,7 +35,7 @@ namespace BudgetManagement.Persistence.Repositories
                 var param = new DynamicParameters();
                 param.Add("@UserId", userId);
 
-                //query asyncy returns a list, query first or default returns a single item, execute executes
+                //query asyncy returns a list, query first or default returns a single item, execute runs
                 var incomes = await connection.QueryAsync<BudgetIncome>("dbo.GetIncomeByUserId", param, commandType: CommandType.StoredProcedure);
 
                 connection.Close();
@@ -126,19 +126,11 @@ namespace BudgetManagement.Persistence.Repositories
                 var parameter = new DynamicParameters();
                 parameter.Add("@IncomeId", incomeId);
 
-                var budgetIncome = await connection.QueryFirstOrDefaultAsync("dbo.GetIncomeByIncomeId", parameter, commandType: CommandType.StoredProcedure);
+                var budgetIncome = await connection.QueryFirstOrDefaultAsync<BudgetIncome>("dbo.GetIncomeByIncomeId", parameter, commandType: CommandType.StoredProcedure);
 
                 connection.Close();
 
-                BudgetIncome income = new BudgetIncome()
-                {
-                    Id = budgetIncome.Id,
-                    UserId = budgetIncome.UserId,
-                    IncomeAmount = budgetIncome.IncomeAmount,
-                    IncomeType = budgetIncome.IncomeType
-                };
-
-                return income;
+                return budgetIncome;
             }
         }
     }
