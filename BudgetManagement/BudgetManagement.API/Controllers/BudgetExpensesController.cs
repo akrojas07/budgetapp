@@ -14,7 +14,7 @@ namespace BudgetManagement.API.Controllers
     [Route("budget/expenses")]
     [ApiController]
     /*[Authorize]*/
-    public class BudgetExpensesController: ControllerBase
+    public class BudgetExpensesController : ControllerBase
     {
         private readonly IBudgetExpensesServices _expenseServices;
         private readonly IConfiguration _configuration;
@@ -29,9 +29,9 @@ namespace BudgetManagement.API.Controllers
         [Route("addnewexpense")]
         public async Task<IActionResult> AddNewExpense([FromBody]AddNewExpenseRequest newExpenseRequest)
         {
-            if(newExpenseRequest == null)
+            if (newExpenseRequest == null)
             {
-                return StatusCode(400,"Expense not provided");
+                return StatusCode(400, "Expense not provided");
             }
 
             try
@@ -47,28 +47,28 @@ namespace BudgetManagement.API.Controllers
 
                 return StatusCode(201);
             }
-            catch(ArgumentException ae)
+            catch (ArgumentException ae)
             {
                 return StatusCode(400, ae.Message);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
 
         [HttpGet]
-
-        public async Task<IActionResult> GetExpensesByUserId(GetAllExpensesByUserIdRequest userId)
+        [Route("{userId}")]
+        public async Task<IActionResult> GetExpensesByUserId(long userId)
         {
-            if(userId == null)
+            if(userId == 0)
             {
                 return StatusCode(400, "Bad Request");
             }
 
             try
             {
-                return Ok(await _expenseServices.GetExpensesByUserId((long)userId.UserId));
+                return Ok(await _expenseServices.GetExpensesByUserId(userId));
                 
             }
             catch(ArgumentException ae)

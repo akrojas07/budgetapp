@@ -52,16 +52,17 @@ namespace BudgetManagement.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllIncomeByUserId(GetAllIncomeByUserIdRequest getAllIncome)
+        [Route("{userId}")]
+        public async Task<IActionResult> GetAllIncomeByUserId(long userId)
         {
-            if(getAllIncome == null)
+            if(userId == 0)
             {
                 return StatusCode(400, "Bad Request");
             }
 
             try
             {
-                return Ok(await _incomeServices.GetAllIncomeByUserId((long)getAllIncome.UserId));
+                return Ok(await _incomeServices.GetAllIncomeByUserId(userId));
             }
             catch(ArgumentException ae)
             {

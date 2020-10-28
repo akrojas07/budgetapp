@@ -1,6 +1,7 @@
 ﻿using BudgetManagement.API.Models.BudgetBreakdownModels;
 using BudgetManagement.Domain.Models;
 using BudgetManagement.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,9 @@ using System.Threading.Tasks;
 
 namespace BudgetManagement.API.Controllers
 {
-    [Route("budget/breakdown")]
+    [Route("api/budget/breakdown")]
     [ApiController]
+  //  [Authorize ]
     public class BudgetBreakdownController:ControllerBase
     {
         private IBudgetBreakdownServices _budgetBreakdownServices;
@@ -66,22 +68,18 @@ namespace BudgetManagement.API.Controllers
         }
 
         [HttpGet]
-        [Route("breakdown")]
-        public async Task<IActionResult> GetBudgetBreakdownByUserId(GetBudgetBreakdownByUserIdRequest breakdownUserId)
+        [Route("breakdown/{userId}")]
+        public async Task<IActionResult> GetBudgetBreakdownByUserId(long userId)
         {
-            if(breakdownUserId == null)
-            {
-                return StatusCode(400, "Budget Breakdown not provided");
-            }
 
-            if(breakdownUserId.UserId <= 0)
+            if(userId <= 0)
             {
                 return StatusCode(400, "User not provided");
             }
 
             try
             {
-                return Ok(await _budgetBreakdownServices.GetBudgetBreakdownByUser((long)breakdownUserId.UserId));
+                return Ok(await _budgetBreakdownServices.GetBudgetBreakdownByUser(userId));
             }
             catch (ArgumentException ae)
             {
@@ -94,23 +92,18 @@ namespace BudgetManagement.API.Controllers
         }
 
         [HttpGet]
-        [Route("budgettype")]
+        [Route("budgettype/{userId}")]
 
-        public async Task<IActionResult> GetBudgetTypeByUserId(GetBudgetTypeByUserId budgetTypeUserId)
+        public async Task<IActionResult> GetBudgetTypeByUserId(long userId)
         {
-            if (budgetTypeUserId == null)
-            {
-                return StatusCode(400, "Budget Breakdown not provided");
-            }
-
-            if (budgetTypeUserId.UserId <= 0)
+            if (userId <= 0)
             {
                 return StatusCode(400, "User not provided");
             }
 
             try
             {
-                return Ok(await _budgetBreakdownServices.GetBudgetTypeByUserId((long) budgetTypeUserId.UserId));
+                return Ok(await _budgetBreakdownServices.GetBudgetTypeByUserId(userId));
             }
             catch (ArgumentException ae)
             {

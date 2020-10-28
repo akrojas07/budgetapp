@@ -11,7 +11,7 @@ namespace BudgetManagement.API.Controllers
 {
     [Route("budget/savings")]
     [ApiController]
-    public class BudgetSavingsController: ControllerBase
+    public class BudgetSavingsController : ControllerBase
     {
         private readonly IBudgetSavingsServices _savingsServices;
 
@@ -23,7 +23,7 @@ namespace BudgetManagement.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewSaving(AddNewSavingRequest savingsRequest)
         {
-            if(savingsRequest == null)
+            if (savingsRequest == null)
             {
                 return StatusCode(400, "Bad Request");
             }
@@ -41,27 +41,28 @@ namespace BudgetManagement.API.Controllers
 
                 return StatusCode(201);
             }
-            catch(ArgumentException ae)
+            catch (ArgumentException ae)
             {
                 return StatusCode(400, ae.Message);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                return StatusCode(500,e.Message);
+                return StatusCode(500, e.Message);
             }
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllSavingsByUserId(GetAllSavingsByUserIdRequest getRequest)
+        [Route("{userId}")]
+        public async Task<IActionResult> GetAllSavingsByUserId(long userId)
         {
-            if(getRequest == null)
+            if(userId == 0)
             {
                 return StatusCode(400, "Bad Request");
             }
 
             try
             {
-                return Ok(await _savingsServices.GetAllSavingsByUserId((long)getRequest.UserId));
+                return Ok(await _savingsServices.GetAllSavingsByUserId(userId));
             }
             catch (ArgumentException ae)
             {
