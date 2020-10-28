@@ -9,7 +9,7 @@ namespace BudgetManagement.Persistence.Repositories.Entities
         public long Id { get; set; }
         public long UserId { get; set; }
         public string BudgetType { get; set; }
-        public decimal ExpensesBreakdown { get; set; }
-        public decimal SavingsBreakdown { get; set; }
+        public decimal Expenses { get; set; }
+        public decimal Savings { get; set; }
     }
 }

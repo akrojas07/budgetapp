@@ -15,8 +15,8 @@ namespace BudgetManagement.Domain.DbMapper
                 Id = dbEntity.Id,
                 UserId = dbEntity.UserId, 
                 BudgetType = dbEntity.BudgetType,
-                ExpensesBreakdown = dbEntity.ExpensesBreakdown,
-                SavingsBreakdown = dbEntity.SavingsBreakdown
+                ExpensesBreakdown = dbEntity.Expenses,
+                SavingsBreakdown = dbEntity.Savings
             };
 
             return coreModel;
@@ -28,8 +28,8 @@ namespace BudgetManagement.Domain.DbMapper
             {
                 UserId = coreModel.UserId,
                 BudgetType = coreModel.BudgetType,
-                ExpensesBreakdown = coreModel.ExpensesBreakdown,
-                SavingsBreakdown = coreModel.SavingsBreakdown
+                Expenses = coreModel.ExpensesBreakdown,
+                Savings = coreModel.SavingsBreakdown
             };
 
             return dbEntity;
@@ -42,8 +42,8 @@ namespace BudgetManagement.Domain.DbMapper
                 Id = coreModel.Id, 
                 UserId = coreModel.UserId,
                 BudgetType = coreModel.BudgetType,
-                ExpensesBreakdown = coreModel.ExpensesBreakdown,
-                SavingsBreakdown = coreModel.SavingsBreakdown
+                Expenses = coreModel.ExpensesBreakdown,
+                Savings = coreModel.SavingsBreakdown
             };
 
             return dbEntity;
