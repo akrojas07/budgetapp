@@ -13,7 +13,7 @@ namespace BudgetManagement.API.Controllers
     [ApiController]
     public class BudgetIncomeController : ControllerBase
     {
-        private IBudgetIncomeServices _incomeServices;
+        private readonly IBudgetIncomeServices _incomeServices;
 
         public BudgetIncomeController(IBudgetIncomeServices incomeServices)
         {

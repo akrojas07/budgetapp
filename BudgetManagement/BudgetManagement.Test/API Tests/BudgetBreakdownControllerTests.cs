@@ -83,7 +83,7 @@ namespace BudgetManagement.Test.API_Tests
                 .ReturnsAsync(new BudgetBreakdownModel());
 
             var controller = new BudgetBreakdownController(_breakdownServices.Object);
-            var response = await controller.GetBudgetBreakdownByUserId(new GetBudgetBreakdownByUserIdRequest() { UserId = 1});
+            var response = await controller.GetBudgetBreakdownByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(200, ((ObjectResult)response).StatusCode);
@@ -97,7 +97,7 @@ namespace BudgetManagement.Test.API_Tests
                 .Throws<ArgumentException>();
 
             var controller = new BudgetBreakdownController(_breakdownServices.Object);
-            var response = await controller.GetBudgetBreakdownByUserId(null);
+            var response = await controller.GetBudgetBreakdownByUserId(0);
 
             Assert.NotNull(response);
             Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
@@ -110,7 +110,7 @@ namespace BudgetManagement.Test.API_Tests
                 .Throws<Exception>();
 
             var controller = new BudgetBreakdownController(_breakdownServices.Object);
-            var response = await controller.GetBudgetBreakdownByUserId(new GetBudgetBreakdownByUserIdRequest() { UserId = 1 });
+            var response = await controller.GetBudgetBreakdownByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
@@ -122,7 +122,7 @@ namespace BudgetManagement.Test.API_Tests
             _breakdownServices.Setup(b => b.GetBudgetTypeByUserId(It.IsAny<long>()))
                 .ReturnsAsync("string");
             var controller = new BudgetBreakdownController(_breakdownServices.Object);
-            var response = await controller.GetBudgetTypeByUserId(new GetBudgetTypeByUserId() { UserId = 1 });
+            var response = await controller.GetBudgetTypeByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(200, ((ObjectResult)response).StatusCode);
@@ -134,7 +134,7 @@ namespace BudgetManagement.Test.API_Tests
             _breakdownServices.Setup(b => b.GetBudgetTypeByUserId(It.IsAny<long>()))
                 .Throws<ArgumentException>();
             var controller = new BudgetBreakdownController(_breakdownServices.Object);
-            var response = await controller.GetBudgetTypeByUserId(null);
+            var response = await controller.GetBudgetTypeByUserId(0);
 
             Assert.NotNull(response);
             Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
@@ -146,7 +146,7 @@ namespace BudgetManagement.Test.API_Tests
             _breakdownServices.Setup(b => b.GetBudgetTypeByUserId(It.IsAny<long>()))
                 .Throws<Exception>();
             var controller = new BudgetBreakdownController(_breakdownServices.Object);
-            var response = await controller.GetBudgetTypeByUserId(new GetBudgetTypeByUserId() { UserId = 1 });
+            var response = await controller.GetBudgetTypeByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
@@ -198,7 +198,7 @@ namespace BudgetManagement.Test.API_Tests
                 .Returns(Task.CompletedTask);
 
             var controller = new BudgetBreakdownController(_breakdownServices.Object);
-            var response = await controller.UpdateBudgetBreakdownByUser(new UpdateBudgetBreakdownRequest() { UserId = 1, BudgetType = "zbb", ExpensesBreakdown = .25m, SavingsBreakdown = .35m});
+            var response = await controller.UpdateBudgetBreakdownByUser(new UpdateBudgetBreakdownRequest() {Id = 1, UserId = 1, BudgetType = "zbb", ExpensesBreakdown = .25m, SavingsBreakdown = .35m});
 
             Assert.NotNull(response);
             Assert.AreEqual(200, ((OkResult)response).StatusCode);
@@ -224,7 +224,7 @@ namespace BudgetManagement.Test.API_Tests
                 .Throws<Exception>();
 
             var controller = new BudgetBreakdownController(_breakdownServices.Object);
-            var response = await controller.UpdateBudgetBreakdownByUser(new UpdateBudgetBreakdownRequest() { UserId = 1, BudgetType = "zbb", ExpensesBreakdown = .25m, SavingsBreakdown = .35m });
+            var response = await controller.UpdateBudgetBreakdownByUser(new UpdateBudgetBreakdownRequest() { Id = 1, UserId = 1, BudgetType = "zbb", ExpensesBreakdown = .25m, SavingsBreakdown = .35m });
 
             Assert.NotNull(response);
             Assert.AreEqual(500, ((ObjectResult)response).StatusCode);

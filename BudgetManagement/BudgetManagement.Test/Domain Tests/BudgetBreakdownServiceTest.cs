@@ -195,15 +195,19 @@ namespace BudgetManagement.Test.Domain_Tests
         public async Task Test_UpdateBudgetBreakdownByUserId_Success()
         {
             _budgetBreakdownRepository.Setup(b => b.GetBudgetBreakdownByUserId(It.IsAny<long>()))
-                .ReturnsAsync(new BudgetBreakdown());
+                .ReturnsAsync(new BudgetBreakdown()
+                {
+                    Id = 5,
+                    UserId = 22
+                });
             _budgetBreakdownRepository.Setup(b => b.UpdateBudgetBreakdownByUserId(It.IsAny<BudgetBreakdown>()))
                 .Returns(Task.CompletedTask);
 
             var breakdownServices = new BudgetBreakdownServices(_budgetBreakdownRepository.Object);
             await breakdownServices.UpdateBudgetBreakdownByUserId(new BudgetBreakdownModel() 
             {
-                Id = 1,
-                UserId = 18,
+                Id = 5,
+                UserId = 22,
                 BudgetType = "zbb", 
                 ExpensesBreakdown = .35m,
                 SavingsBreakdown = .15m 
@@ -227,7 +231,29 @@ namespace BudgetManagement.Test.Domain_Tests
         [Test]
         public void Test_UpdateBudgetBreakdownByUserId_Fail_Exception()
         {
-            _budgetBreakdownRepository.Setup(b => b.GetBudgetBreakdownByUserId(It.IsAny<long>()));
+            _budgetBreakdownRepository.Setup(b => b.GetBudgetBreakdownByUserId(It.IsAny<long>()))
+                .Throws<Exception>();
+            _budgetBreakdownRepository.Setup(b => b.UpdateBudgetBreakdownByUserId(It.IsAny<BudgetBreakdown>()))
+                .Returns(Task.CompletedTask);
+
+            var breakdownServices = new BudgetBreakdownServices(_budgetBreakdownRepository.Object);
+            Assert.ThrowsAsync<Exception>(() => breakdownServices.UpdateBudgetBreakdownByUserId(new BudgetBreakdownModel()
+            {
+                Id = 1,
+                UserId = 18,
+                BudgetType = "zbb",
+                ExpensesBreakdown = .35m,
+                SavingsBreakdown = .15m
+            }));
+
+            _budgetBreakdownRepository.Verify(b => b.UpdateBudgetBreakdownByUserId(It.IsAny<BudgetBreakdown>()), Times.Never);
+        }
+
+        [Test]
+        public void Test_UpdateBudgetBreakdownByUserId_Fail_Exception_UserIdsDontMatch()
+        {
+            _budgetBreakdownRepository.Setup(b => b.GetBudgetBreakdownByUserId(It.IsAny<long>()))
+                .ReturnsAsync(new BudgetBreakdown());
             _budgetBreakdownRepository.Setup(b => b.UpdateBudgetBreakdownByUserId(It.IsAny<BudgetBreakdown>()))
                 .Returns(Task.CompletedTask);
 

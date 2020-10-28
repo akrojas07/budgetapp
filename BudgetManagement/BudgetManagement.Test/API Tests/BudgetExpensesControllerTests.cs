@@ -60,18 +60,6 @@ namespace BudgetManagement.Test.API_Tests
             Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
         }
 
-        [Test]
-        public async Task Test_AddNewExpense_Fail_NullEntry()
-        {
-            _expensesServices.Setup(e => e.AddNewExpense(It.IsAny<BudgetExpensesModel>()))
-                .ThrowsAsync(new ArgumentException("No data entered"));
-
-            var controller = new BudgetExpensesController(_expensesServices.Object);
-            var response = await controller.AddNewExpense(new AddNewExpenseRequest());
-
-            Assert.NotNull(response);
-            Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
-        }
 
         [Test]
         public async Task Test_AddNewExpense_Fail_BadArgument()
@@ -89,7 +77,7 @@ namespace BudgetManagement.Test.API_Tests
                 .ReturnsAsync(new List<BudgetExpensesModel>());
 
             var controller = new BudgetExpensesController(_expensesServices.Object);
-            var response = await controller.GetExpensesByUserId(new GetAllExpensesByUserIdRequest() { UserId = 1});
+            var response = await controller.GetExpensesByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(200, ((ObjectResult)response).StatusCode);
@@ -99,7 +87,7 @@ namespace BudgetManagement.Test.API_Tests
         public async Task Test_GetAllExpensesByUserId_Fail_BadRequest()
         {
             var controller = new BudgetExpensesController(_expensesServices.Object);
-            var response = await controller.GetExpensesByUserId(null);
+            var response = await controller.GetExpensesByUserId(0);
 
             Assert.NotNull(response);
             Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
@@ -112,7 +100,7 @@ namespace BudgetManagement.Test.API_Tests
                 .ThrowsAsync(new ArgumentException("Null Entry"));
 
             var controller = new BudgetExpensesController(_expensesServices.Object);
-            var response = await controller.GetExpensesByUserId(new GetAllExpensesByUserIdRequest() { UserId = 1});
+            var response = await controller.GetExpensesByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
@@ -125,7 +113,7 @@ namespace BudgetManagement.Test.API_Tests
                 .ThrowsAsync(new Exception("Exception"));
 
             var controller = new BudgetExpensesController(_expensesServices.Object);
-            var response = await controller.GetExpensesByUserId(new GetAllExpensesByUserIdRequest() { UserId = 1 });
+            var response = await controller.GetExpensesByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(500, ((ObjectResult)response).StatusCode);

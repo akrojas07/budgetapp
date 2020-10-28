@@ -37,8 +37,8 @@ namespace BudgetManagement.Persistence.Repositories
                 var parameters = new DynamicParameters();
                 parameters.Add("@UserId", budgetBreakdown.UserId);
                 parameters.Add("@BudgetType", budgetBreakdown.BudgetType);
-                parameters.Add("@Expenses", budgetBreakdown.ExpensesBreakdown);
-                parameters.Add("@Savings", budgetBreakdown.SavingsBreakdown);
+                parameters.Add("@Expenses", budgetBreakdown.Expenses);
+                parameters.Add("@Savings", budgetBreakdown.Savings);
 
                 await connection.ExecuteAsync("dbo.AddNewBudgetBreakdownByUserId", parameters, commandType: CommandType.StoredProcedure);
 
@@ -126,8 +126,8 @@ namespace BudgetManagement.Persistence.Repositories
                 var parameters = new DynamicParameters();
                 parameters.Add("@UserId", budgetBreakdown.UserId);
                 parameters.Add("@BudgetType", budgetBreakdown.BudgetType);
-                parameters.Add("@Expenses", budgetBreakdown.ExpensesBreakdown);
-                parameters.Add("@Savings", budgetBreakdown.SavingsBreakdown);
+                parameters.Add("@Expenses", budgetBreakdown.Expenses);
+                parameters.Add("@Savings", budgetBreakdown.Savings);
 
                 await connection.ExecuteAsync("dbo.UpdateBudgetBreakdownByUser", parameters, commandType: CommandType.StoredProcedure);
 

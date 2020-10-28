@@ -59,7 +59,12 @@ namespace BudgetManagement.Test.API_Tests
                 .ThrowsAsync(new ArgumentException("Income details not provided"));
 
             var controller = new BudgetIncomeController(_incomeServices.Object);
-            var response = await controller.AddNewIncome(new AddNewIncomeRequest());
+            var response = await controller.AddNewIncome(new AddNewIncomeRequest() 
+            { 
+                UserId = 1,
+                IncomeAmount = 34.5m,
+                IncomeType = "Paycheck"
+            });
 
             Assert.NotNull(response);
             Assert.AreEqual(400,((ObjectResult)response).StatusCode);
@@ -85,10 +90,7 @@ namespace BudgetManagement.Test.API_Tests
                 .ReturnsAsync(new List<BudgetIncomeModel>());
 
             var controller = new BudgetIncomeController(_incomeServices.Object);
-            var response = await controller.GetAllIncomeByUserId(new GetAllIncomeByUserIdRequest()
-            {
-                UserId = 1
-            });
+            var response = await controller.GetAllIncomeByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(200, ((OkObjectResult)response).StatusCode);
@@ -101,10 +103,7 @@ namespace BudgetManagement.Test.API_Tests
                 .ThrowsAsync(new ArgumentException("Bad Request"));
 
             var controller = new BudgetIncomeController(_incomeServices.Object);
-            var response = await controller.GetAllIncomeByUserId(new GetAllIncomeByUserIdRequest()
-            {
-                UserId = 1
-            });
+            var response = await controller.GetAllIncomeByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
@@ -114,7 +113,7 @@ namespace BudgetManagement.Test.API_Tests
         public async Task Test_GetAllIncomeByUserID_Fail_BadArgument()
         {
             var controller = new BudgetIncomeController(_incomeServices.Object);
-            var response = await controller.GetAllIncomeByUserId(null);
+            var response = await controller.GetAllIncomeByUserId(0);
 
             Assert.NotNull(response);
             Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
@@ -127,10 +126,7 @@ namespace BudgetManagement.Test.API_Tests
                 .ThrowsAsync(new Exception("Internal Error"));
 
             var controller = new BudgetIncomeController(_incomeServices.Object);
-            var response = await controller.GetAllIncomeByUserId(new GetAllIncomeByUserIdRequest()
-            {
-                UserId = 1
-            });
+            var response = await controller.GetAllIncomeByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(500, ((ObjectResult)response).StatusCode);

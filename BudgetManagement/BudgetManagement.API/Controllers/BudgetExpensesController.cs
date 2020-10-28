@@ -17,7 +17,7 @@ namespace BudgetManagement.API.Controllers
     public class BudgetExpensesController : ControllerBase
     {
         private readonly IBudgetExpensesServices _expenseServices;
-        private readonly IConfiguration _configuration;
+        //private readonly IConfiguration _configuration;
 
         public BudgetExpensesController(IBudgetExpensesServices expenseServices/*, IConfiguration config*/)
         {

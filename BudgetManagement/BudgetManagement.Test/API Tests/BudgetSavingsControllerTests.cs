@@ -96,7 +96,7 @@ namespace BudgetManagement.Test.API_Tests
                 .ReturnsAsync(new List<BudgetSavingsModel>());
 
             var controller = new BudgetSavingsController(_savingsServices.Object);
-            var response = await controller.GetAllSavingsByUserId(new GetAllSavingsByUserIdRequest() { UserId = 1});
+            var response = await controller.GetAllSavingsByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(200, ((OkObjectResult)response).StatusCode);
@@ -108,7 +108,7 @@ namespace BudgetManagement.Test.API_Tests
             _savingsServices.Setup(s => s.GetAllSavingsByUserId(It.IsAny<long>()))
                 .ThrowsAsync(new ArgumentException("Bad argument"));
             var controller = new BudgetSavingsController(_savingsServices.Object);
-            var response = await controller.GetAllSavingsByUserId(new GetAllSavingsByUserIdRequest() { UserId = 1 });
+            var response = await controller.GetAllSavingsByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
@@ -118,7 +118,7 @@ namespace BudgetManagement.Test.API_Tests
         public async Task Test_GetAllSavingsByUserId_Fail_BadRequest()
         {
             var controller = new BudgetSavingsController(_savingsServices.Object);
-            var response = await controller.GetAllSavingsByUserId(null);
+            var response = await controller.GetAllSavingsByUserId(0);
 
             Assert.NotNull(response);
             Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
@@ -131,7 +131,7 @@ namespace BudgetManagement.Test.API_Tests
                 .ThrowsAsync(new Exception("Internal Error"));
 
             var controller = new BudgetSavingsController(_savingsServices.Object);
-            var response = await controller.GetAllSavingsByUserId(new GetAllSavingsByUserIdRequest() { UserId = 1 });
+            var response = await controller.GetAllSavingsByUserId(1);
 
             Assert.NotNull(response);
             Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
