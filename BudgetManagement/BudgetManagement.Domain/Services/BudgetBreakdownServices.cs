@@ -50,6 +50,11 @@ namespace BudgetManagement.Domain.Services
 
             var dbBudgetBreakdown = await _budgetBreakdownRepository.GetBudgetBreakdownByUserId(userId);
 
+            if (dbBudgetBreakdown == null)
+            {
+                return null;
+            }
+
             var coreBreakdown = AdoBudgetBreakdownMapper.DbEntityToCoreModel(dbBudgetBreakdown);
 
             return coreBreakdown;
@@ -68,6 +73,12 @@ namespace BudgetManagement.Domain.Services
             }
 
             var budgetType = await _budgetBreakdownRepository.GetBudgetTypeByUserId(userId);
+
+            if(budgetType == null)
+            {
+                return null;
+            }
+
             return budgetType;
         }
 
