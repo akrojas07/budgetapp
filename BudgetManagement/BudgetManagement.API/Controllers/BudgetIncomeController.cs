@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BudgetManagement.API.Controllers
 {
-    [Route("budget/income")]
+    [Route("api/budget/income")]
     [ApiController]
     public class BudgetIncomeController : ControllerBase
     {
@@ -120,6 +120,42 @@ namespace BudgetManagement.API.Controllers
                 return StatusCode(500, e.Message);
             }
 
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpsertIncomes([FromBody]UpsertIncomesRequest upsertIncomes)
+        {
+            if(upsertIncomes.Incomes.Count <=0)
+            {
+                return StatusCode(400, "Bad Request");
+            }
+
+            try
+            {
+                List<BudgetIncomeModel> budgetIncomes = new List<BudgetIncomeModel>();
+
+                foreach(var upsertIncome in upsertIncomes.Incomes)
+                {
+                    BudgetIncomeModel coreIncomeModel = new BudgetIncomeModel() 
+                    { 
+                        Id = upsertIncome.Id,
+                        UserId = upsertIncome.UserId,
+                        IncomeAmount = upsertIncome.Amount,
+                        IncomeType = upsertIncome.IncomeType
+                    };
+                }
+
+                await _incomeServices.UpsertIncomes(budgetIncomes);
+                return Ok(); 
+            }
+            catch (ArgumentException ae)
+            {
+                return StatusCode(400, ae.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }

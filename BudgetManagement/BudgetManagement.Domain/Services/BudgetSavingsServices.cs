@@ -1,6 +1,7 @@
 ﻿using BudgetManagement.Domain.Models;
 using BudgetManagement.Domain.Services.Interfaces;
 using BudgetManagement.Persistence.Repositories.Interfaces;
+using BudgetManagement.Persistence.Repositories.Entities; 
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -103,6 +104,29 @@ namespace BudgetManagement.Domain.Services
 
             //if exists, call update saving repo method
             await _savingsRepository.UpdateSaving(savingId, savingsAmount);
+        }
+
+        /// <summary>
+        /// Method to insert / update / remove savings records 
+        /// </summary>
+        /// <param name="budgetSavings"></param>
+        /// <returns>Task Complete</returns>
+        public async Task UpsertSavings(List<BudgetSavingsModel> budgetSavings)
+        {
+            if(budgetSavings.Count <= 0)
+            {
+                throw new Exception("Savings not provided");
+            }
+
+            List<BudgetSavings> dbSavings = new List<BudgetSavings>();
+
+            foreach(var budgetSaving in budgetSavings)
+            {
+                dbSavings.Add(Mapper.CoreToDbEntityExisting(budgetSaving));
+            }
+
+            await _savingsRepository.UpsertSavings(dbSavings);
+            
         }
     }
 }

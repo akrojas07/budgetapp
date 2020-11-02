@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BudgetManagement.API.Controllers
 {
-    [Route("budget/savings")]
+    [Route("api/budget/savings")]
     [ApiController]
     public class BudgetSavingsController : ControllerBase
     {
@@ -18,6 +18,42 @@ namespace BudgetManagement.API.Controllers
         public BudgetSavingsController(IBudgetSavingsServices savingsServices)
         {
             _savingsServices = savingsServices;
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpsertSavings([FromBody] UpsertSavingsRequest upsertSavings)
+        {
+            if(upsertSavings.Savings.Count <= 0)
+            {
+                return StatusCode(400, "Bad Request");
+            }
+            try
+            {
+                List<BudgetSavingsModel> budgetSavings = new List<BudgetSavingsModel>();
+                foreach(var upsertSaving in upsertSavings.Savings)
+                {
+                    BudgetSavingsModel coreSavingsModel = new BudgetSavingsModel()
+                    {
+                        Id = upsertSaving.Id,
+                        UserId = upsertSaving.UserId,
+                        SavingsAmount = upsertSaving.Amount,
+                        SavingsType = upsertSaving.SavingType
+                    };
+
+                    budgetSavings.Add(coreSavingsModel);
+                }
+
+                await _savingsServices.UpsertSavings(budgetSavings);
+                return Ok();
+            }
+            catch (ArgumentException ae)
+            {
+                return StatusCode(400, ae.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPost]

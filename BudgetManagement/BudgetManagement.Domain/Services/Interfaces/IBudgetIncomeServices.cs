@@ -12,5 +12,6 @@ namespace BudgetManagement.Domain.Services.Interfaces
         Task AddNewIncome(BudgetIncomeModel incomeModel);
         Task UpdateIncome(long incomeId, decimal incomeAmount);
         Task RemoveIncome(long incomeId);
+        Task UpsertIncomes(List<BudgetIncomeModel> budgetIncomes);
     }
 }

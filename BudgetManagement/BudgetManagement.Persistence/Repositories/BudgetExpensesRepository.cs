@@ -47,6 +47,36 @@ namespace BudgetManagement.Persistence.Repositories
         }
 
         /// <summary>
+        /// Method to update / add / delete expense records 
+        /// </summary>
+        /// <param name="budgetExpenses"></param>
+        /// <returns>Task Complete</returns>
+        public async Task UpsertExpenses(List<BudgetExpenses> budgetExpenses) 
+        { 
+            using(var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var dataTable = new DataTable();
+                dataTable.Columns.Add("@UserId", typeof(long));
+                dataTable.Columns.Add("@BudgetTypeId", typeof(long));
+                dataTable.Columns.Add("@Type", typeof(string));
+                dataTable.Columns.Add("@Amount", typeof(decimal));
+
+                foreach(var budgetExpense in budgetExpenses)
+                {
+                    dataTable.Rows.Add(budgetExpense.UserId, budgetExpense.Id, budgetExpense.ExpenseType, budgetExpense.ExpenseAmount);
+                }
+
+                var parameter = new DynamicParameters();
+                parameter.Add("@Expenses", dataTable.AsTableValuedParameter("[dbo].[BudgetInputsTableType]"));
+
+                await connection.ExecuteAsync("dbo.UpsertExpenses", parameter, commandType: CommandType.StoredProcedure);
+
+                connection.Close();
+            }
+        }
+
+        /// <summary>
         /// Method to pull all expenses by user id 
         /// </summary>
         /// <param name="userId"></param>

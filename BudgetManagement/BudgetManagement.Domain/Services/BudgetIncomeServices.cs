@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BudgetManagement.Domain.DbMapper;
 using BudgetManagement.Persistence.Repositories.Interfaces;
+using BudgetManagement.Persistence.Repositories.Entities;
 
 namespace BudgetManagement.Domain.Services
 {
@@ -101,6 +102,28 @@ namespace BudgetManagement.Domain.Services
             }
 
             await _incomeRepository.UpdateIncome(incomeId, incomeAmount);
+        }
+
+        /// <summary>
+        /// Method to insert / update / remove income records
+        /// </summary>
+        /// <param name="budgetIncomes"></param>
+        /// <returns>Task Complete</returns>
+        public async Task UpsertIncomes(List<BudgetIncomeModel> budgetIncomes)
+        {
+            if(budgetIncomes.Count <=0)
+            {
+                throw new Exception("Income not provided");
+            }
+
+            List<BudgetIncome> dbIncomes = new List<BudgetIncome>();
+
+            foreach(var budgetIncome in budgetIncomes)
+            {
+                dbIncomes.Add(AdoIncomeMapper.CoreModelToDbEntityExisting(budgetIncome));
+            }
+
+            await _incomeRepository.UpsertIncomes(dbIncomes);
         }
     }
 }

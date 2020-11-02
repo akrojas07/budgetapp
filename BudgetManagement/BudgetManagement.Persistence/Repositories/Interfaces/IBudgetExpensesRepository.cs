@@ -14,5 +14,6 @@ namespace BudgetManagement.Persistence.Repositories.Interfaces
         Task UpdateExpense(long expenseId, decimal expenseAmount);
         Task RemoveExpense(long expenseId);
         Task<BudgetExpenses> GetExpenseByExpenseId(long expenseId);
+        Task UpsertExpenses(List<BudgetExpenses> budgetExpenses);
     }
 }

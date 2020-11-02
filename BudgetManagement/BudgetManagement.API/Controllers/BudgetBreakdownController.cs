@@ -68,7 +68,7 @@ namespace BudgetManagement.API.Controllers
         }
 
         [HttpGet]
-        [Route("breakdown/{userId}")]
+        [Route("{userId}")]
         public async Task<IActionResult> GetBudgetBreakdownByUserId(long userId)
         {
 

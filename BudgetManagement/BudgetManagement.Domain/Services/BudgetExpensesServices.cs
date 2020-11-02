@@ -1,6 +1,7 @@
 ﻿using BudgetManagement.Domain.Models;
 using BudgetManagement.Domain.Services.Interfaces;
 using BudgetManagement.Persistence.Repositories.Interfaces;
+using BudgetManagement.Persistence.Repositories.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -100,6 +101,28 @@ namespace BudgetManagement.Domain.Services
             }
 
             await _expensesRepository.UpdateExpense(expenseId, expenseAmount);
+        }
+
+        /// <summary>
+        /// Service method to add / update / remove expense record 
+        /// </summary>
+        /// <param name="budgetExpenses"></param>
+        /// <returns>Task Complete</returns>
+        public async Task UpsertExpenses(List<BudgetExpensesModel> budgetExpenses)
+        {
+            if (budgetExpenses.Count <= 0)
+            {
+                throw new Exception("Expenses not entered");
+            }
+
+            List<BudgetExpenses> dbExpenses = new List<BudgetExpenses>();
+
+            foreach(var budgetExpense in budgetExpenses)
+            {
+               dbExpenses.Add(AdoExpensesMapper.CoreModelToDbEntityExisting(budgetExpense));
+            }
+
+            await _expensesRepository.UpsertExpenses(dbExpenses);
         }
     }
 }

@@ -44,6 +44,38 @@ namespace BudgetManagement.Persistence.Repositories
             }
         }
 
+
+        /// <summary>
+        /// Method to insert/update/delete income record
+        /// </summary>
+        /// <param name="budgetIncomes"></param>
+        /// <returns>Task Complete</returns>
+        public async Task UpsertIncomes(List<BudgetIncome> budgetIncomes)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                var dataTable = new DataTable();
+                dataTable.Columns.Add("@UserId", typeof(long));
+                dataTable.Columns.Add("@BudgetTypeId", typeof(long));
+                dataTable.Columns.Add("@Type", typeof(string));
+                dataTable.Columns.Add("@Amount", typeof(decimal));
+
+                foreach(var budgetIncome in budgetIncomes)
+                {
+                    dataTable.Rows.Add(budgetIncome.UserId, budgetIncome.Id, budgetIncome.IncomeType, budgetIncome.IncomeAmount);
+                }
+
+                var parameter = new DynamicParameters();
+                parameter.Add("@Incomes", dataTable.AsTableValuedParameter("[dbo].[BudgetInputsTableType]"));
+
+                await connection.ExecuteAsync("dbo.UpsertIncomes", parameter, commandType: CommandType.StoredProcedure) ; 
+                
+                connection.Close(); 
+            }
+        }
+
         /// <summary>
         /// Method to update income  
         /// </summary>

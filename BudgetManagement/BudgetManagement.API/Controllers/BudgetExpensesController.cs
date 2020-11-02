@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BudgetManagement.API.Controllers
 {
-    [Route("budget/expenses")]
+    [Route("api/budget/expenses")]
     [ApiController]
     /*[Authorize]*/
     public class BudgetExpensesController : ControllerBase
@@ -123,6 +123,44 @@ namespace BudgetManagement.API.Controllers
                 return StatusCode(500, e.Message);
             }
 
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpsertExpenses([FromBody]UpsertExpensesRequest upsertExpensesRequest)
+        {
+            if(upsertExpensesRequest.Expenses.Count <= 0)
+            {
+                return StatusCode(400,"Bad Request");
+            }
+            try
+            {
+                List<BudgetExpensesModel> budgetExpenses = new List<BudgetExpensesModel>();
+
+                foreach(var expense in upsertExpensesRequest.Expenses)
+                {
+                    BudgetExpensesModel coreModel = new BudgetExpensesModel()
+                    {
+                        Id = expense.Id,
+                        UserId = expense.UserId,
+                        ExpenseAmount = expense.Amount,
+                        ExpenseType = expense.ExpenseType
+                    };
+
+                    budgetExpenses.Add(coreModel);
+                }
+
+                await _expenseServices.UpsertExpenses(budgetExpenses);
+                return Ok();
+
+            }
+            catch (ArgumentException ae)
+            {
+                return StatusCode(400, ae.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }

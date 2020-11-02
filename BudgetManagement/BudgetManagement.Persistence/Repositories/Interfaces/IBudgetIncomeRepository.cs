@@ -13,6 +13,7 @@ namespace BudgetManagement.Persistence.Repositories.Interfaces
         Task AddNewIncome(BudgetIncome budgetIncome);
         Task RemoveIncome(long incomeId);
         Task<BudgetIncome> GetIncomeByIncomeId(long incomeId);
+        Task UpsertIncomes(List<BudgetIncome> budgetIncomes);
 
     }
 }

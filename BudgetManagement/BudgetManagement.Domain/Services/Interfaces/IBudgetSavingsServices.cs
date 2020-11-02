@@ -14,5 +14,7 @@ namespace BudgetManagement.Domain.Services.Interfaces
 
         Task UpdateSaving(long savingId, decimal savingsAmount);
         Task RemoveSaving(long savingId);
+
+        Task UpsertSavings(List<BudgetSavingsModel> budgetSavings);
     }
 }

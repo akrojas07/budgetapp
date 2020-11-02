@@ -12,5 +12,6 @@ namespace BudgetManagement.Domain.Services.Interfaces
         Task AddNewExpense(BudgetExpensesModel expensesModel);
         Task UpdateExpense(long expenseId, decimal expenseAmount);
         Task RemoveExpense(long expenseId);
+        Task UpsertExpenses(List<BudgetExpensesModel> budgetExpenses);
     }
 }

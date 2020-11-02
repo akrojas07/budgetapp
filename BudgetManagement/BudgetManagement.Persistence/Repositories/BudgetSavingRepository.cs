@@ -20,6 +20,36 @@ namespace BudgetManagement.Persistence.Repositories
         {
             _connectionString = config.GetSection("ConnectionString:BudgetDb").Value;
         }
+
+        /// <summary>
+        /// Method to update / add / delete savings records 
+        /// </summary>
+        /// <param name="budgetSavings"></param>
+        /// <returns>Task Complete</returns>
+        public async Task UpsertSavings(List<BudgetSavings> budgetSavings)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var dataTable = new DataTable();
+                dataTable.Columns.Add("@UserId", typeof(long));
+                dataTable.Columns.Add("@BudgetTypeId", typeof(long));
+                dataTable.Columns.Add("@Type", typeof(string));
+                dataTable.Columns.Add("@Amount", typeof(decimal));
+
+                foreach (var budgetSaving in budgetSavings)
+                {
+                    dataTable.Rows.Add(budgetSaving.UserId, budgetSaving.Id, budgetSaving.SavingsType, budgetSaving.SavingsAmount);
+                }
+
+                var parameter = new DynamicParameters();
+                parameter.Add("@Savings", dataTable.AsTableValuedParameter("[dbo].[BudgetInputsTableType]"));
+
+                await connection.ExecuteAsync("dbo.UpsertSavings", parameter, commandType: CommandType.StoredProcedure);
+
+                connection.Close();
+            }
+        }
         /// <summary>
         /// Method to add new saving object 
         /// </summary>
