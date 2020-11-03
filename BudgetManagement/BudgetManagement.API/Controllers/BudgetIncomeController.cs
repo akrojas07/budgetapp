@@ -148,6 +148,7 @@ namespace BudgetManagement.API.Controllers
                         IncomeAmount = upsertIncome.Amount,
                         IncomeType = upsertIncome.IncomeType
                     };
+                    budgetIncomes.Add(coreIncomeModel);
                 }
 
                 await _incomeServices.UpsertIncomes(budgetIncomes);
