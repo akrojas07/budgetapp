@@ -224,5 +224,142 @@ namespace BudgetManagement.Test.API_Tests
             Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
         }
 
+        [Test]
+        public async Task Test_UpsertExpenses_Success_Existing()
+        {
+            _expensesServices.Setup(e => e.UpsertExpenses(It.IsAny<List<BudgetExpensesModel>>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new BudgetExpensesController(_expensesServices.Object);      
+
+            var response = await controller.UpsertExpenses(new UpsertExpensesRequest() 
+            {
+                Expenses = new List<Expense>()
+                {
+                    new Expense()
+                    {
+                        Id = 5,
+                        UserId = 5,
+                        Amount = 5,
+                        ExpenseType = "Groceries"
+                    },
+                    new Expense()
+                    {
+                        Id = 6,
+                        UserId = 6,
+                        Amount = 5,
+                        ExpenseType = "Groceries"
+                    }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(200, ((OkResult)response).StatusCode);
+        }
+
+
+
+        [Test]
+        public async Task Test_UpsertExpenses_Success_New()
+        {
+            _expensesServices.Setup(e => e.UpsertExpenses(It.IsAny<List<BudgetExpensesModel>>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new BudgetExpensesController(_expensesServices.Object);
+
+            var response = await controller.UpsertExpenses(new UpsertExpensesRequest()
+            {
+                Expenses = new List<Expense>()
+                {
+                    new Expense()
+                    {
+                        UserId = 5,
+                        Amount = 5,
+                        ExpenseType = "Groceries"
+                    },
+                    new Expense()
+                    {
+                        UserId = 6,
+                        Amount = 5,
+                        ExpenseType = "Groceries"
+                    }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(200, ((OkResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_UpsertExpenses_Fail_EmptyList()
+        {
+            var controller = new BudgetExpensesController(_expensesServices.Object);
+            var response = await controller.UpsertExpenses(new UpsertExpensesRequest()
+            {
+                Expenses = new List<Expense>()
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
+
+        }
+
+        [Test]
+        public async Task Test_UpsertExpenses_Fail_GeneralException()
+        {
+            _expensesServices.Setup(e => e.UpsertExpenses(It.IsAny<List<BudgetExpensesModel>>()))
+                .ThrowsAsync(new Exception("This is a service exception"));
+            var controller = new BudgetExpensesController(_expensesServices.Object);
+            var response = await controller.UpsertExpenses(new UpsertExpensesRequest()
+            {
+                Expenses = new List<Expense>()
+                {
+                    new Expense()
+                    {
+                        UserId = 5,
+                        Amount = 5,
+                        ExpenseType = "Groceries"
+                    },
+                    new Expense()
+                    {
+                        UserId = 6,
+                        Amount = 5,
+                        ExpenseType = "Groceries"
+                    }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_UpsertExpenses_Fail_ArgumentException()
+        {
+            _expensesServices.Setup(e => e.UpsertExpenses(It.IsAny<List<BudgetExpensesModel>>()))
+                .ThrowsAsync(new ArgumentException("This is a service argument exception"));
+            var controller = new BudgetExpensesController(_expensesServices.Object);
+            var response = await controller.UpsertExpenses(new UpsertExpensesRequest()
+            {
+                Expenses = new List<Expense>()
+                {
+                    new Expense()
+                    {
+                        UserId = 5,
+                        Amount = 5,
+                        ExpenseType = "Groceries"
+                    },
+                    new Expense()
+                    {
+                        UserId = 6,
+                        Amount = 5,
+                        ExpenseType = "Groceries"
+                    }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
+        }
     }
 }

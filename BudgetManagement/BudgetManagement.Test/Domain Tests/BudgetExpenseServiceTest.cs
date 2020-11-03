@@ -23,6 +23,43 @@ namespace BudgetManagement.Test.Domain_Tests
         }
 
         [Test]
+        public async Task Test_UpsertExpenses_Success()
+        {
+            _expenseRepository.Setup(e => e.UpsertExpenses(It.IsAny<List<BudgetExpenses>>()))
+                .Returns(Task.CompletedTask);
+
+            var expenseService = new BudgetExpensesServices(_expenseRepository.Object);
+            await expenseService.UpsertExpenses(new List<BudgetExpensesModel>() 
+            { 
+                new BudgetExpensesModel{UserId = 1, ExpenseAmount = 300, ExpenseType = "Groceries"},
+                new BudgetExpensesModel{UserId = 1, ExpenseAmount = 300, ExpenseType = "Fines"}
+            });
+
+            _expenseRepository.Verify(e => e.UpsertExpenses(It.IsAny<List<BudgetExpenses>>()), Times.Once);
+        }
+
+        [Test]
+        public void Test_UpsertExpenses_Fail_EmptyList()
+        {
+            _expenseRepository.Setup(e => e.UpsertExpenses(It.IsAny<List<BudgetExpenses>>()))
+                .Returns(Task.CompletedTask);
+
+            var expenseService = new BudgetExpensesServices(_expenseRepository.Object);
+            Assert.ThrowsAsync<ArgumentException>(() => expenseService.UpsertExpenses(new List<BudgetExpensesModel>()));
+
+            _expenseRepository.Verify(e => e.UpsertExpenses(It.IsAny<List<BudgetExpenses>>()), Times.Never);
+        }
+
+        [Test]
+        public void Test_UpsertExpenses_Fail_NullServiceParameter()
+        {
+            var expenseService = new BudgetExpensesServices(_expenseRepository.Object);
+            Assert.ThrowsAsync<NullReferenceException>(() => expenseService.UpsertExpenses(null));
+
+            _expenseRepository.Verify(e => e.UpsertExpenses(It.IsAny<List<BudgetExpenses>>()), Times.Never);
+        }
+
+        [Test]
         public async Task Test_AddNewExpense_Success()
         {
             _expenseRepository.Setup(e => e.AddNewExpense(It.IsAny<BudgetExpenses>()))

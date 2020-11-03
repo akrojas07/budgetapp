@@ -112,7 +112,7 @@ namespace BudgetManagement.Domain.Services
         {
             if (budgetExpenses.Count <= 0)
             {
-                throw new Exception("Expenses not entered");
+                throw new ArgumentException("Expenses not entered");
             }
 
             List<BudgetExpenses> dbExpenses = new List<BudgetExpenses>();

@@ -115,7 +115,7 @@ namespace BudgetManagement.Domain.Services
         {
             if(budgetSavings.Count <= 0)
             {
-                throw new Exception("Savings not provided");
+                throw new ArgumentException("Savings not provided");
             }
 
             List<BudgetSavings> dbSavings = new List<BudgetSavings>();

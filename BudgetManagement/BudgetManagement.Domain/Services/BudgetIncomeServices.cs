@@ -113,7 +113,7 @@ namespace BudgetManagement.Domain.Services
         {
             if(budgetIncomes.Count <=0)
             {
-                throw new Exception("Income not provided");
+                throw new ArgumentException("Income not provided");
             }
 
             List<BudgetIncome> dbIncomes = new List<BudgetIncome>();

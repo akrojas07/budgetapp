@@ -241,5 +241,121 @@ namespace BudgetManagement.Test.API_Tests
             Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
         }
 
+        [Test]
+        public async Task Test_UpsertIncomes_Success()
+        {
+            _incomeServices.Setup(i => i.UpsertIncomes(It.IsAny<List<BudgetIncomeModel>>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new BudgetIncomeController(_incomeServices.Object);
+            var response = await controller.UpsertIncomes(new UpsertIncomesRequest()
+            {
+                Incomes = new List<Income>()
+                {
+                    new Income()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        IncomeType = "random string"
+                    },
+                    new Income()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        IncomeType = "random string"
+                    }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(200, ((OkResult)response).StatusCode);
+
+        }
+
+        [Test]
+        public async Task Test_UpsertIncomes_Fail_EmptyIncomeObjects()
+        {
+            _incomeServices.Setup(i => i.UpsertIncomes(It.IsAny<List<BudgetIncomeModel>>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new BudgetIncomeController(_incomeServices.Object);
+            var response = await controller.UpsertIncomes(new UpsertIncomesRequest()
+            {
+                Incomes = new List<Income>()
+                {
+                    new Income(){},
+                    new Income(){ }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_UpsertIncomes_Fail_GeneralException()
+        {
+            _incomeServices.Setup(i => i.UpsertIncomes(It.IsAny<List<BudgetIncomeModel>>()))
+                .ThrowsAsync(new Exception("This is a service exception"));
+
+            var controller = new BudgetIncomeController(_incomeServices.Object);
+            var response = await controller.UpsertIncomes(new UpsertIncomesRequest()
+            {
+                Incomes = new List<Income>()
+                {
+                    new Income()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        IncomeType = "random string"
+                    },
+                    new Income()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        IncomeType = "random string"
+                    }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_UpsertIncomes_Fail_BadArgument()
+        {
+            _incomeServices.Setup(i => i.UpsertIncomes(It.IsAny<List<BudgetIncomeModel>>()))
+                .ThrowsAsync(new ArgumentException("This is a service argument exception"));
+
+            var controller = new BudgetIncomeController(_incomeServices.Object);
+            var response = await controller.UpsertIncomes(new UpsertIncomesRequest()
+            {
+                Incomes = new List<Income>()
+                {
+                    new Income()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        IncomeType = "random string"
+                    },
+                    new Income()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        IncomeType = "random string"
+                    }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
+        }
     }
 }

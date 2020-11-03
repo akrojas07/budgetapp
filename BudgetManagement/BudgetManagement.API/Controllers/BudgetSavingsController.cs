@@ -32,6 +32,10 @@ namespace BudgetManagement.API.Controllers
                 List<BudgetSavingsModel> budgetSavings = new List<BudgetSavingsModel>();
                 foreach(var upsertSaving in upsertSavings.Savings)
                 {
+                    if(upsertSaving.UserId == 0)
+                    {
+                        return StatusCode(400, "Bad Request");
+                    }
                     BudgetSavingsModel coreSavingsModel = new BudgetSavingsModel()
                     {
                         Id = upsertSaving.Id,

@@ -24,6 +24,43 @@ namespace BudgetManagement.Test.Domain_Tests
         }
 
         [Test]
+        public async Task Test_UpsertSavings_Success()
+        {
+            _savingsRepository.Setup(s => s.UpsertSavings(It.IsAny<List<BudgetSavings>>()))
+                .Returns(Task.CompletedTask);
+
+            var savingsServices = new BudgetSavingsServices(_savingsRepository.Object);
+            await savingsServices.UpsertSavings(new List<BudgetSavingsModel>() 
+            { 
+                new BudgetSavingsModel{UserId = 2, SavingsAmount = 500, SavingsType="Money Market"},
+                new BudgetSavingsModel{Id = 1, UserId = 4, SavingsType = "Money Market", SavingsAmount = 200}
+            });
+
+            _savingsRepository.Verify(s => s.UpsertSavings(It.IsAny<List<BudgetSavings>>()), Times.Once);
+        }
+
+        [Test]
+        public void Test_UpsertSavings_Fail_EmptyList()
+        {
+            _savingsRepository.Setup(s => s.UpsertSavings(It.IsAny<List<BudgetSavings>>()))
+                .Returns(Task.CompletedTask);
+
+            var savingsServices = new BudgetSavingsServices(_savingsRepository.Object);
+            Assert.ThrowsAsync<ArgumentException>(() => savingsServices.UpsertSavings(new List<BudgetSavingsModel>()));
+
+            _savingsRepository.Verify(s => s.UpsertSavings(It.IsAny<List<BudgetSavings>>()), Times.Never);
+        }
+
+        [Test]
+        public void Test_UpsertSavings_Fail_NullEntry()
+        {
+            var savingsServices = new BudgetSavingsServices(_savingsRepository.Object);
+            Assert.ThrowsAsync<NullReferenceException>(() => savingsServices.UpsertSavings(null));
+
+            _savingsRepository.Verify(s => s.UpsertSavings(It.IsAny<List<BudgetSavings>>()), Times.Never);
+        }
+
+        [Test]
         public async Task Test_AddNewSaving_Success()
         {
             _savingsRepository.Setup(s => s.AddNewSaving(It.IsAny<BudgetSavings>()))

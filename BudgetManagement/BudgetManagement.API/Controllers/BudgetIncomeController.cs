@@ -136,6 +136,11 @@ namespace BudgetManagement.API.Controllers
 
                 foreach(var upsertIncome in upsertIncomes.Incomes)
                 {
+                    if(upsertIncome.UserId == 0)
+                    {
+                        return StatusCode(400, "Bad Request");
+                    }
+
                     BudgetIncomeModel coreIncomeModel = new BudgetIncomeModel() 
                     { 
                         Id = upsertIncome.Id,

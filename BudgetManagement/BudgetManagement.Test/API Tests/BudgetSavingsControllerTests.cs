@@ -236,5 +236,124 @@ namespace BudgetManagement.Test.API_Tests
             Assert.NotNull(response);
             Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
         }
+
+
+        [Test]
+        public async Task Test_UpsertSavings_Success()
+        {
+            _savingsServices.Setup(i => i.UpsertSavings(It.IsAny<List<BudgetSavingsModel>>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new BudgetSavingsController(_savingsServices.Object);
+            var response = await controller.UpsertSavings(new UpsertSavingsRequest()
+            {
+                Savings = new List<Saving>()
+                {
+                    new Saving()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        SavingType = "random string"
+                    },
+                    new Saving()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        SavingType = "random string"
+                    }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(200, ((OkResult)response).StatusCode);
+
+        }
+
+        [Test]
+        public async Task Test_UpsertIncomes_Fail_EmptyIncomeObjects()
+        {
+            _savingsServices.Setup(i => i.UpsertSavings(It.IsAny<List<BudgetSavingsModel>>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new BudgetSavingsController(_savingsServices.Object);
+            var response = await controller.UpsertSavings(new UpsertSavingsRequest()
+            {
+                Savings = new List<Saving>()
+                {
+                    new Saving(){},
+                    new Saving(){ }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_UpsertIncomes_Fail_GeneralException()
+        {
+            _savingsServices.Setup(i => i.UpsertSavings(It.IsAny<List<BudgetSavingsModel>>()))
+                .ThrowsAsync(new Exception("This is a service exception"));
+
+            var controller = new BudgetSavingsController(_savingsServices.Object);
+            var response = await controller.UpsertSavings(new UpsertSavingsRequest()
+            {
+                Savings = new List<Saving>()
+                {
+                    new Saving()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        SavingType = "random string"
+                    },
+                    new Saving()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        SavingType = "random string"
+                    }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(500, ((ObjectResult)response).StatusCode);
+        }
+
+        [Test]
+        public async Task Test_UpsertIncomes_Fail_BadArgument()
+        {
+            _savingsServices.Setup(i => i.UpsertSavings(It.IsAny<List<BudgetSavingsModel>>()))
+                .ThrowsAsync(new ArgumentException("This is a service argument exception"));
+
+            var controller = new BudgetSavingsController(_savingsServices.Object);
+            var response = await controller.UpsertSavings(new UpsertSavingsRequest()
+            {
+                Savings = new List<Saving>()
+                {
+                    new Saving()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        SavingType = "random string"
+                    },
+                    new Saving()
+                    {
+                        Id = 5,
+                        UserId = 4,
+                        Amount = 500,
+                        SavingType = "random string"
+                    }
+                }
+            });
+
+            Assert.NotNull(response);
+            Assert.AreEqual(400, ((ObjectResult)response).StatusCode);
+        }
     }
 }
+

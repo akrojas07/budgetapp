@@ -138,6 +138,10 @@ namespace BudgetManagement.API.Controllers
 
                 foreach(var expense in upsertExpensesRequest.Expenses)
                 {
+                    if(expense.UserId == 0 )
+                    {
+                        return StatusCode(400, "Bad Request");
+                    }
                     BudgetExpensesModel coreModel = new BudgetExpensesModel()
                     {
                         Id = expense.Id,
