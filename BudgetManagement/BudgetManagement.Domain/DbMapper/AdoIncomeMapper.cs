@@ -18,7 +18,7 @@ namespace BudgetManagement.Domain.DbMapper
             CoreIncomeModel coreModel = new CoreIncomeModel()
             {
                 Id = incomeEntity.Id,
-                IncomeAmount = incomeEntity.IncomeAmount,
+                Amount = incomeEntity.IncomeAmount,
                 IncomeType = incomeEntity.IncomeType,
                 UserId = incomeEntity.UserId
             };
@@ -37,7 +37,7 @@ namespace BudgetManagement.Domain.DbMapper
             DbIncomeEntity dbEntity = new DbIncomeEntity()
             {
                 UserId = incomeModel.UserId,
-                IncomeAmount = incomeModel.IncomeAmount,
+                IncomeAmount = incomeModel.Amount,
                 IncomeType = incomeModel.IncomeType
             };
 
@@ -57,7 +57,7 @@ namespace BudgetManagement.Domain.DbMapper
                 Id = incomeModel.Id,
                 UserId = incomeModel.UserId,
                 IncomeType = incomeModel.IncomeType,
-                IncomeAmount = incomeModel.IncomeAmount
+                IncomeAmount = incomeModel.Amount
             };
 
             return dbEntity;

@@ -33,7 +33,7 @@ namespace BudgetManagement.API.Controllers
                 BudgetIncomeModel coreIncomeModel = new BudgetIncomeModel()
                 {
                     UserId = (long)newIncomeRequest.UserId,
-                    IncomeAmount = (decimal)newIncomeRequest.IncomeAmount,
+                    Amount = (decimal)newIncomeRequest.IncomeAmount,
                     IncomeType = newIncomeRequest.IncomeType
 
                 };
@@ -145,7 +145,7 @@ namespace BudgetManagement.API.Controllers
                     { 
                         Id = upsertIncome.Id,
                         UserId = upsertIncome.UserId,
-                        IncomeAmount = upsertIncome.Amount,
+                        Amount = upsertIncome.Amount,
                         IncomeType = upsertIncome.IncomeType
                     };
                     budgetIncomes.Add(coreIncomeModel);

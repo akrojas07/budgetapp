@@ -12,12 +12,12 @@ namespace BudgetManagement.Domain.Models
         {
             UserId = userId;
             IncomeType = incomeType;
-            IncomeAmount = incomeAmount;
+            Amount = incomeAmount;
         
         }
         public long Id { get; set; }
         public long UserId { get; set; }
         public string IncomeType { get; set; }
-        public decimal IncomeAmount { get; set; }
+        public decimal Amount { get; set; }
     }
 }
