@@ -20,3 +20,21 @@ UserManagement/User.Tests/obj/
 UserManagement/User.API/.config/
 
 UserManagement/User.API/Properties/PublishProfiles/
+
+BudgetManagement/.vs/
+
+BudgetManagement/BudgetManagement.API/bin/
+
+BudgetManagement/BudgetManagement.API/obj/
+
+BudgetManagement/BudgetManagement.Domain/bin/
+
+BudgetManagement/BudgetManagement.Domain/obj/
+
+BudgetManagement/BudgetManagement.Persistence/bin/
+
+BudgetManagement/BudgetManagement.Persistence/obj/
+
+BudgetManagement/BudgetManagement.Test/bin/
+
+BudgetManagement/BudgetManagement.Test/obj/
