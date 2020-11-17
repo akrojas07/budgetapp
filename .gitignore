@@ -38,3 +38,21 @@ BudgetManagement/BudgetManagement.Persistence/obj/
 BudgetManagement/BudgetManagement.Test/bin/
 
 BudgetManagement/BudgetManagement.Test/obj/
+
+GoalsManagement/.vs/
+
+GoalsManagement/GoalsManagement.API/bin/
+
+GoalsManagement/GoalsManagement.API/obj/
+
+GoalsManagement/GoalsManagement.Domain/bin/
+
+GoalsManagement/GoalsManagement.Domain/obj/
+
+GoalsManagement/GoalsManagement.Persistence/bin/
+
+GoalsManagement/GoalsManagement.Persistence/obj/
+
+GoalsManagement/GoalsManagement.Test/obj/
+
+GoalsManagement/GoalsManagement.Test/bin/
