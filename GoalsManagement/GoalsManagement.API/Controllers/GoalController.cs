@@ -66,7 +66,7 @@ namespace GoalsManagement.API.Controllers
                     {
                         Id = upsertGoal.Id,
                         UserId = upsertGoal.UserId,
-                        Amount = upsertGoal.Amount,
+                        Amount = upsertGoal.GoalAmount,
                         TargetAmount = upsertGoal.TargetAmount,
                         GoalName = upsertGoal.GoalName,
                         GoalSummary = upsertGoal.GoalSummary,

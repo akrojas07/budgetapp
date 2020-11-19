@@ -31,7 +31,7 @@ namespace GoalsManagement.Persistence.Repositories
                 var dbGoals = await context.Goals.Where(g => g.UserId == goals[0].UserId).ToListAsync();
 
                 var goalsToAdd = goals.Except(dbGoals, goalComparer).ToList();
-                var goalsToUpdate = goals.Intersect(dbGoals).ToList();
+                var goalsToUpdate = goals.Intersect(dbGoals, goalComparer).ToList();
                 var goalsToDelete = dbGoals.Except(goals, goalComparer).ToList();
 
                 foreach (var goal in goalsToAdd)

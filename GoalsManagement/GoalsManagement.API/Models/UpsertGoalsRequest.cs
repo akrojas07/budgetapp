@@ -18,7 +18,7 @@ namespace GoalsManagement.API.Models
         public string GoalSummary { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public decimal Amount { get; set; }
+        public decimal GoalAmount { get; set; }
         public decimal TargetAmount { get; set; }
     }
 }
