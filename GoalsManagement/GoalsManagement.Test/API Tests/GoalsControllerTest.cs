@@ -77,7 +77,7 @@ namespace GoalsManagement.Test.API_Tests
                    {
                        Id = 5,
                        UserId = 5,
-                       Amount = 50,
+                       GoalAmount = 50,
                        TargetAmount = 500,
                        GoalName = "Goal Name",
                        GoalSummary = "Goal Summary",
