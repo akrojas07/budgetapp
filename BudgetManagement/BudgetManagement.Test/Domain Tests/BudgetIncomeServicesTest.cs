@@ -31,8 +31,8 @@ namespace BudgetManagement.Test.Domain_Tests
             var incomeServices = new BudgetIncomeServices(_incomeRepository.Object);
             await incomeServices.UpsertIncomes(new List<BudgetIncomeModel>() 
             { 
-                new BudgetIncomeModel{ UserId = 1, IncomeAmount = 300, IncomeType="Rent"},
-                new BudgetIncomeModel{ UserId = 1, IncomeAmount = 500, IncomeType="Rent"}
+                new BudgetIncomeModel{ UserId = 1, Amount = 300, IncomeType="Rent"},
+                new BudgetIncomeModel{ UserId = 1, Amount = 500, IncomeType="Rent"}
             });
 
             _incomeRepository.Verify(i => i.UpsertIncomes(It.IsAny<List<BudgetIncome>>()), Times.Once);
@@ -69,7 +69,7 @@ namespace BudgetManagement.Test.Domain_Tests
             await incomeServices.AddNewIncome(new BudgetIncomeModel()
             { 
                 UserId = 1,
-                IncomeAmount = 5,
+                Amount = 5,
                 IncomeType = "Pay Check"
             });
 
